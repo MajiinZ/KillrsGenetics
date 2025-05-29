@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+        <style parent="Theme.SplashScreen" name="Theme.Killrs.Splash">
+            <item name="windowSplashScreenBackground">#000000</item>
+            <item name="postSplashScreenTheme">@android:style/Theme.Material.Light.NoActionBar</item>
+            <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+        </style>
+</resources>

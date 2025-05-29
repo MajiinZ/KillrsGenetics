@@ -1,0 +1,108 @@
+[versions]
+agp = "8.8.2"
+android-compileSdk = "35"
+android-minSdk = "24"
+android-targetSdk = "35"
+androidx-activityCompose = "1.10.1"
+androidx-lifecycle = "2.8.4"
+compose-multiplatform = "1.8.0"
+kotlin = "2.1.20"
+navigation = "2.9.0-beta01"
+auth = "2.3.0-beta02"
+notifier = "1.5.1"
+firebase = "2.1.0"
+koin = "4.1.0-Beta11"
+serialization = "1.7.3"
+coil3 = "3.0.4"
+ktor = "3.0.3"
+coroutines = "1.10.1"
+messagebar = "1.0.7"
+google = "4.4.2"
+browser = "1.0.4"
+settings = "1.3.0"
+splash = "1.0.1"
+logback = "1.4.14"
+kotlin-test = "2.1.20"
+testng = "6.9.6"
+
+
+[libraries]
+# AndroidX & Compose
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-lifecycle-viewmodel = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+splash-screen = { module = "androidx.core:core-splashscreen", version.ref = "splash" }
+compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
+
+# Auth & Notifications
+auth-kmp = { module = "io.github.mirzemehdi:kmpauth-google", version.ref = "auth" }
+auth-firebase-kmp = { module = "io.github.mirzemehdi:kmpauth-firebase", version.ref = "auth" }
+kmp-notifier = { module = "io.github.mirzemehdi:kmpnotifier", version.ref = "notifier" }
+
+# Firebase
+firebase-app = { module = "dev.gitlive:firebase-app", version.ref = "firebase" }
+firebase-firestore = { module = "dev.gitlive:firebase-firestore", version.ref = "firebase" }
+firebase-storage = { module = "dev.gitlive:firebase-storage", version.ref = "firebase" }
+firebase-common = { module = "dev.gitlive:firebase-common", version.ref = "firebase" }
+
+# Koin
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+
+# KotlinX
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+
+# Coil 3
+coil3 = { module = "io.coil-kt.coil3:coil", version.ref = "coil3" }
+coil3-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil3" }
+coil3-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref = "coil3" }
+coil3-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil3" }
+
+# Ktor - Server
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty", version.ref = "ktor" }
+ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging", version.ref = "ktor" }
+ktor-server-content-negotiation = { module = "io.ktor:ktor-server-content-negotiation", version.ref = "ktor" }
+ktor-server-default-headers = { module = "io.ktor:ktor-server-default-headers", version.ref = "ktor" }
+ktor-server-status-pages = { module = "io.ktor:ktor-server-status-pages", version.ref = "ktor" }
+ktor-server-host-common = { module = "io.ktor:ktor-server-host-common", version.ref = "ktor" }
+ktor-server-engine = { module = "io.ktor:ktor-server-engine", version.ref = "ktor" }
+ktor-server-test-host = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
+
+# Ktor - Client
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-serialization = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-darwin-client = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-android-client = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
+
+# Test
+kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin-test" }
+kotlin-test-annotations-common = { module = "org.jetbrains.kotlin:kotlin-test-annotations-common", version.ref = "kotlin-test" }
+kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test-common", version.ref = "kotlin-test" }
+
+# Misc
+messagebar-kmp = { module = "com.stevdza-san:messagebarkmp", version.ref = "messagebar" }
+browser-kmp = { module = "com.stevdza-san:browser-kmp", version.ref = "browser" }
+
+
+
+# Multiplatform Settings
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings", version.ref = "settings" }
+multiplatform-settings-no-arg = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "settings" }
+multiplatform-settings-make-observable = { module = "com.russhwolf:multiplatform-settings-make-observable", version.ref = "settings" }
+testng = { group = "org.testng", name = "testng", version.ref = "testng" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "compose-multiplatform" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google" }
