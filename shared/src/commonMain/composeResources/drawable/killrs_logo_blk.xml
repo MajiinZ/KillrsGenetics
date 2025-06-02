@@ -4,7 +4,7 @@
     android:viewportWidth="398"
     android:viewportHeight="597">
 
-  <vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt"
+  <vector xmlns:android="http://schemas.android.com/apk/res/android"
       android:viewportWidth="256"
       android:viewportHeight="256"
       android:width="256dp"

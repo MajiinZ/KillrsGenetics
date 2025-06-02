@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.mz.killrs.shared.FontSize
+import org.mz.killrs.shared.IconSecondary
 import org.mz.killrs.shared.Resources
 import org.mz.killrs.shared.TextSecondary
 
@@ -41,15 +42,15 @@ fun GoogleButton(
     primaryText: String = "Sign in with Google",
     secondaryText: String = "Please wait...",
     icon: DrawableResource = Resources.Image.GoogleLogo,
-    shape: Shape = RoundedCornerShape(size = 99.dp),
-    backgroundColor:Color = Color.Gray,
-    borderColor:Color = Color.LightGray,
-    progressIndicatorColor:Color = TextSecondary,
+    shape: Shape = RoundedCornerShape(size = 9.dp),
+    backgroundColor: Color = Color.Gray,
+    borderColor: Color = Color.LightGray,
+    progressIndicatorColor: Color = IconSecondary,
     onClicked: () -> Unit,
-    ){
+) {
     var buttonText by remember { mutableStateOf(primaryText) }
 
-    LaunchedEffect(loading){
+    LaunchedEffect(loading) {
         buttonText = if (loading) secondaryText else primaryText
     }
 
@@ -60,45 +61,37 @@ fun GoogleButton(
                 width = 1.dp,
                 color = borderColor,
                 shape = shape
-            ).clickable(enabled = !loading) {onClicked()},
+            ).clickable(enabled = !loading) { onClicked() },
         color = backgroundColor
-    ){
-        Row (
+    ) {
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(all = 20.dp)
+                .padding(all = 3.dp)
                 .animateContentSize(
                     animationSpec = tween(durationMillis = 200)
                 ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
-        ){
-            AnimatedVisibility(visible = !loading){
+        ) {
+            AnimatedVisibility(visible = !loading) {
                 CircularProgressIndicator(
                     modifier = Modifier.padding(all = 4.dp),
                     color = progressIndicatorColor,
-                    strokeWidth = 2.dp
+                    strokeWidth = 7.dp
+                )
+                Icon(
+                    painter = painterResource(icon),
+                    contentDescription = "Google Logo",
+                    tint = Color.Unspecified
                 )
             }
-            Icon(
-                painter = painterResource(icon),
-                contentDescription = "Google Logo",
-                tint = Color.Unspecified
-            )
-            AnimatedVisibility(visible = loading){
-                CircularProgressIndicator(
-                    modifier = Modifier.padding(all = 4.dp),
-                    color = progressIndicatorColor,
-                    strokeWidth = 2.dp
-                )
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = buttonText,
-                fontSize = FontSize.LARGE
-            )
         }
-
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(
+            text = buttonText,
+            fontSize = FontSize.MEDIUM
+        )
     }
 
 }

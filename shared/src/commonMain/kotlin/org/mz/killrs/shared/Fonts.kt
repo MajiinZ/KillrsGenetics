@@ -19,11 +19,13 @@ fun Exo2FontItalic() = FontFamily(
     Font(Res.font.exo2_italic)
 )
 
-object FontSize{
-     val EXTRA_SMALL = 10.sp
-     val SMALL = 10.sp
-     val MEDIUM = 20.sp
-     val LARGE = 25.sp
-     val EXTRA_LARGE = 30.sp
-
+object FontSize {
+    val EXTRA_SMALL = 10.sp
+    val SMALL = 12.sp
+    val REGULAR = 14.sp
+    val EXTRA_REGULAR = 16.sp
+    val MEDIUM = 18.sp
+    val EXTRA_MEDIUM = 20.sp
+    val LARGE = 30.sp
+    val EXTRA_LARGE = 40.sp
 }
