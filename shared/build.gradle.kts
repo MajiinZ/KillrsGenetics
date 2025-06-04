@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.serialization)
 }
 
 kotlin {
@@ -23,11 +24,6 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
-        androidMain.dependencies {
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.ktor.android.client)
-            implementation(libs.splash.screen)
-        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -36,10 +32,11 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             ///implementation(libs.plugins.google.services)
-            //implementation(libs.androidx.lifecycle.viewmodel)
-            //implementation(libs.androidx.lifecycle.viewmodel)
-            // implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.androidx.lifecycle.runtime.compose)
             ///implementation(projects.shared)
+            implementation(libs.kotlinx.serialization)
 
         }
         commonTest.dependencies {

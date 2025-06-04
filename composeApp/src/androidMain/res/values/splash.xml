@@ -3,6 +3,6 @@
         <style parent="Theme.SplashScreen" name="Theme.Killrs.Splash">
             <item name="windowSplashScreenBackground">#000000</item>
             <item name="postSplashScreenTheme">@android:style/Theme.Material.Light.NoActionBar</item>
-            <item name="windowSplashScreenAnimatedIcon">@drawable/splash_logo</item>
+            <item name="windowSplashScreenAnimatedIcon">@drawable/killrslogoblack3</item>
         </style>
 </resources>

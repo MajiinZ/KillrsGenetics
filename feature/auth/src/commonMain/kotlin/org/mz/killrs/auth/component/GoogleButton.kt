@@ -8,9 +8,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -43,9 +47,9 @@ fun GoogleButton(
     secondaryText: String = "Please wait...",
     icon: DrawableResource = Resources.Image.GoogleLogo,
     shape: Shape = RoundedCornerShape(size = 9.dp),
-    backgroundColor: Color = Color.Gray,
-    borderColor: Color = Color.LightGray,
-    progressIndicatorColor: Color = IconSecondary,
+    backgroundColor: Color = Color.White, // ✅ Solid white background
+    borderColor: Color = Color.LightGray, // ✅ Optional border
+    progressIndicatorColor: Color = Color.Black, // ✅ Matches text/icon color
     onClicked: () -> Unit,
 ) {
     var buttonText by remember { mutableStateOf(primaryText) }
@@ -56,42 +60,41 @@ fun GoogleButton(
 
     Surface(
         modifier = modifier
+            .fillMaxWidth()
+            .height(48.dp)
             .clip(shape)
-            .border(
-                width = 1.dp,
-                color = borderColor,
-                shape = shape
-            ).clickable(enabled = !loading) { onClicked() },
-        color = backgroundColor
+            .border(1.dp, borderColor, shape)
+            .clickable(enabled = !loading) { onClicked() },
+        color = backgroundColor,
+        shape = shape
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = 3.dp)
-                .animateContentSize(
-                    animationSpec = tween(durationMillis = 200)
-                ),
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
+                .animateContentSize(tween(200)),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-            AnimatedVisibility(visible = !loading) {
+            if (loading) {
                 CircularProgressIndicator(
-                    modifier = Modifier.padding(all = 4.dp),
+                    modifier = Modifier.size(20.dp),
                     color = progressIndicatorColor,
-                    strokeWidth = 7.dp
+                    strokeWidth = 2.dp
                 )
+            } else {
                 Icon(
                     painter = painterResource(icon),
                     contentDescription = "Google Logo",
                     tint = Color.Unspecified
                 )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = buttonText,
+                    fontSize = FontSize.MEDIUM,
+                    color = Color.Black // ✅ Solid readable text
+                )
             }
         }
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(
-            text = buttonText,
-            fontSize = FontSize.MEDIUM
-        )
     }
-
 }

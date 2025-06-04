@@ -23,10 +23,7 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
-        androidMain.dependencies {
 
-
-        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -46,7 +43,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
 
             implementation(project(path = ":shared"))
-            //implementation(project(path = ":data"))
+            implementation(project(path = ":data"))
 
         }
         commonTest.dependencies {

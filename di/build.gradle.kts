@@ -4,10 +4,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.google.services)
 }
 
 kotlin {
@@ -20,15 +19,10 @@ kotlin {
 
     jvm("desktop")
 
+
     sourceSets {
         val desktopMain by getting
 
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.splash.screen)
-            implementation(libs.koin.android)
-        }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -36,15 +30,15 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
+            ///implementation(libs.plugins.google.services)
+            //implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(projects.shared)
-            implementation(libs.auth.kmp)
-            ///implementation(libs.plugins.google.services)
-            implementation(project(path = ":navigation"))
-            implementation(project(path = ":shared"))
-            implementation(project(path = ":di"))
+            ///implementation(projects.shared)
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(project( ":feature:auth"))
 
         }
         commonTest.dependencies {
@@ -58,25 +52,12 @@ kotlin {
 }
 
 android {
-    namespace = "org.mz.killrs"
+    namespace = "org.mz.killrs.di"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.mz.killrs"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -85,7 +66,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":navigation"))
+    testImplementation(libs.testng)
     debugImplementation(compose.uiTooling)
 }
 
