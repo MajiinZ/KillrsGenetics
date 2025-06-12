@@ -1,0 +1,19 @@
+package org.mz.killrs.shared.navigation
+
+import kotlinx.serialization.Serializable
+
+sealed class Screen{
+    @Serializable
+    data object Auth: Screen()
+    @Serializable
+    data object HomeGraph: Screen()
+    @Serializable
+    data object Products: Screen()
+    @Serializable
+    data object ShoppingCart: Screen()
+    @Serializable
+    data object Profile: Screen()
+    @Serializable
+    data object Categories: Screen()
+
+}

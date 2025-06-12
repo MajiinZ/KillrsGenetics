@@ -37,14 +37,19 @@ kotlin {
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodel)
-            implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
-            implementation(projects.shared)
+
             implementation(libs.auth.kmp)
-            ///implementation(libs.plugins.google.services)
+            implementation(libs.firebase.app)
+
+            implementation(libs.koin.compose)
+
             implementation(project(path = ":navigation"))
             implementation(project(path = ":shared"))
             implementation(project(path = ":di"))
+            implementation(project(path = ":data"))
+
+
 
         }
         commonTest.dependencies {
@@ -86,6 +91,8 @@ android {
 
 dependencies {
     implementation(project(":navigation"))
+    implementation(libs.firebase.common.ktx)
+    implementation(project(":data"))
     debugImplementation(compose.uiTooling)
 }
 

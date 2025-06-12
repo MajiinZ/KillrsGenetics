@@ -23,6 +23,7 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -33,18 +34,17 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation(libs.koin.core)
+
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.compose.navigation)
 
-            implementation(project( ":feature:auth"))
-            implementation(project(":shared"))
-            implementation(project(":data"))
-
+            implementation(project(path = ":shared"))
+            implementation(project(path = ":data"))
 
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test)
+            //implementation(libs.kotlin.test)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -54,7 +54,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.mz.killrs.di"
+    namespace = "org.mz.killrs.home"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -65,6 +65,12 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+}
+
+dependencies {
+    implementation(libs.androidx.core)
+    //implementation(libs.androidx.navigation.compose.jvmstubs)
+    debugImplementation(compose.uiTooling)
 }
 
 compose.desktop {

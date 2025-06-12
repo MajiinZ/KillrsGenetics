@@ -5,6 +5,7 @@
 
     </uses-permission>
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:roundIcon="@drawable/killrslogoblack3"
         android:label="@string/app_name"

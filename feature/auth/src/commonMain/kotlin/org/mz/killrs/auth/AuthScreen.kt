@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +24,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 import org.mz.killrs.auth.component.GoogleButton
 import org.mz.killrs.shared.Alpha
 import org.mz.killrs.shared.Black
@@ -38,7 +43,12 @@ import org.mz.killrs.shared.TextWhite
 import rememberMessageBarState
 
 @Composable
-fun AuthenticationScreen() {
+fun AuthenticationScreen(
+    navigateToHome: () -> Unit
+) {
+
+    val scope = rememberCoroutineScope()
+    val viewModel = koinViewModel<AuthViewModel>()
     val messageBarState = rememberMessageBarState()
     var loadingState by remember { mutableStateOf(false) }
 
@@ -104,6 +114,18 @@ fun AuthenticationScreen() {
                         linkAccount = false,
                         onResult = { result ->
                             result.onSuccess { user ->
+                                viewModel.createCustomer(
+                                    user = user,
+                                    onSuccess = {
+                                        scope.launch {
+                                            messageBarState.addSuccess("Authentication successful")
+                                            delay(2000)
+                                            navigateToHome()
+                                        }
+                                    },
+                                    onFailure = { message -> messageBarState.addError(message) },
+
+                                    )
                                 messageBarState.addSuccess("Authentication successful")
                                 loadingState = false
                             }.onFailure { error ->

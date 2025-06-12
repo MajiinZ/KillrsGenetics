@@ -33,7 +33,10 @@ plugins {
 }
 include(":data")
 include(":di")
+include(":feature:home")
+include(":feature:home")
 
+include(":feature:home")
 include(":feature:auth")
 include(":navigation")
 include(":composeApp")

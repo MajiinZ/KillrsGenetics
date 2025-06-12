@@ -1,13 +1,16 @@
 package org.mz.data
 
-import com.google.firebase.firestore.firestore
 import dev.gitlive.firebase.Firebase
 import dev.gitlive.firebase.auth.FirebaseUser
+import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 import org.mz.data.domain.CustomerRepository
 import org.mz.killrs.shared.domain.Customer
 
 class CustomerRepositoryImpl: CustomerRepository {
+    override fun getCurrentUserId(): String? {
+        return Firebase.auth.currentUser?.uid
+    }
 
     override suspend fun createCustomers(
         user: FirebaseUser?,
@@ -27,8 +30,8 @@ class CustomerRepositoryImpl: CustomerRepository {
 
                 )
 
-                val customerExsists = customerCollection.document(user.uid).get().exists
-                if (customerExsists){
+                val customerExists = customerCollection.document(user.uid).get().exists
+                if (customerExists){
                     onSuccess()
                 }else{
                     customerCollection.document(user.uid).set(customer)

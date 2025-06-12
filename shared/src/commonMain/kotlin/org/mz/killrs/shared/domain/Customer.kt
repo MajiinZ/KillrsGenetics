@@ -1,7 +1,6 @@
 package org.mz.killrs.shared.domain
 
 import kotlinx.serialization.Serializable
-import sun.jvm.hotspot.debugger.Address
 
 @Serializable
 data class Customer(
