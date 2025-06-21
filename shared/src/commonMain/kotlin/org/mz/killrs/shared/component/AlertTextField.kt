@@ -1,4 +1,4 @@
-package org.mz.killrs.profile.component
+package org.mz.killrs.shared.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

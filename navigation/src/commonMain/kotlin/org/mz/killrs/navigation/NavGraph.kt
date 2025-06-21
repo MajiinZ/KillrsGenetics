@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.mz.home.HomeGraphScreen
 import org.mz.killrs.auth.AuthenticationScreen
+import org.mz.killrs.profile.ProfileScreen
 import org.mz.killrs.shared.navigation.Screen
 
 @Composable
@@ -33,8 +34,14 @@ fun SetupNavGraph(
                     navController.navigate(Screen.Auth){
                         popUpTo<Screen.HomeGraph>{inclusive = true }
                     }
+                },
+                navigateToProfile = {
+                    navController.navigate(Screen.Profile)
                 }
             )
+        }
+        composable<Screen.Profile> {
+            ProfileScreen()
         }
     }
 }
