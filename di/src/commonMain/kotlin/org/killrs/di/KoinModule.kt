@@ -4,17 +4,19 @@ package org.killrs.di
 
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import org.mz.data.CustomerRepositoryImpl
 import org.mz.data.domain.CustomerRepository
+import org.mz.home.HomeGraphViewModel
 import org.mz.killrs.auth.AuthViewModel
 
 
 val sharedModule = module {
     single<CustomerRepository>{CustomerRepositoryImpl()}
-    singleOf(::AuthViewModel)
+
+    viewModelOf(::AuthViewModel)
+    viewModelOf(::HomeGraphViewModel)
 }
 
 fun initializeKoin(

@@ -32,11 +32,13 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 include(":data")
+include(":data")
 include(":di")
 include(":feature:home")
 include(":feature:home")
 
 include(":feature:home")
+include(":feature:profile")
 include(":feature:auth")
 include(":navigation")
 include(":composeApp")

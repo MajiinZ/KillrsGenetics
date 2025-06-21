@@ -27,6 +27,11 @@ enum class DrawerItem(
         title = "Settings",
         icon = Resources.Icon.Dollar
     ),
+    SignOut(
+        title = "Sign Out",
+        icon = Resources.Icon.Close
+    ),
+
     AdminPanel(
         title = "Admin Panel",
         icon = Resources.Icon.Seed

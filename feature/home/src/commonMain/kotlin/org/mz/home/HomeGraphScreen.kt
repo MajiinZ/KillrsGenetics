@@ -1,5 +1,6 @@
 package org.mz.home
 
+import ContentWithMessageBar
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -35,6 +36,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
 import org.mz.home.component.BottomBar
 import org.mz.home.component.CustomDrawer
 import org.mz.home.domain.BottomBarDestination
@@ -50,11 +52,14 @@ import org.mz.killrs.shared.SurfaceLighter
 import org.mz.killrs.shared.TextPrimary
 import org.mz.killrs.shared.navigation.Screen
 import org.mz.killrs.shared.util.getScreenWidth
+import rememberMessageBarState
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeGraphScreen() {
+fun HomeGraphScreen(
+    navigateToAuth: () -> Unit
+) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
 
@@ -85,6 +90,9 @@ fun HomeGraphScreen() {
         targetValue = if (drawerState.value.isOpened()) 20.dp else 0.dp
     )
 
+    val viewModel = koinViewModel<HomeGraphViewModel>()
+    val messageBarState = rememberMessageBarState()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -97,7 +105,15 @@ fun HomeGraphScreen() {
             onCartClick = {},
             onOrdersClick = {},
             onAdminPanelClick = {},
-            onSettingsClick = {}
+            onSettingsClick = {},
+            onSignOutClick = {
+                viewModel.signOut(
+                    onSuccess = navigateToAuth,
+                    onError = { message ->
+                        messageBarState.addError(message)
+                    }
+                )
+            }
         )
 
         Box(
@@ -151,41 +167,53 @@ fun HomeGraphScreen() {
                     )
                 }
             ) { padding ->
-                Column(
+                ContentWithMessageBar(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(
                             top = padding.calculateTopPadding(),
                             bottom = padding.calculateBottomPadding()
-                        )
-                ) {
-                    NavHost(
-                        modifier = Modifier.weight(1f),
-                        navController = navController,
-                        startDestination = Screen.Products
+                        ),
+                    messageBarState = messageBarState,
+                    errorMaxLines = 3,
+                    contentBackgroundColor = Surface
+                ){
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                top = padding.calculateTopPadding(),
+                                bottom = padding.calculateBottomPadding()
+                            )
                     ) {
-                        composable<Screen.Products> { }
-                        composable<Screen.ShoppingCart> { }
-                        composable<Screen.Profile> { }
-                        composable<Screen.Categories> { }
-                    }
+                        NavHost(
+                            modifier = Modifier.weight(1f),
+                            navController = navController,
+                            startDestination = Screen.Products
+                        ) {
+                            composable<Screen.Products> { }
+                            composable<Screen.ShoppingCart> { }
+                            composable<Screen.Profile> { }
+                            composable<Screen.Categories> { }
+                        }
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
 
-                    Box(modifier = Modifier.padding(12.dp)) {
-                        BottomBar(
-                            selected = selectedDestination,
-                            onSelect = { destination ->
-                                navController.navigate(destination.screen) {
-                                    launchSingleTop = true
-                                    popUpTo<Screen.Products> {
-                                        saveState = true
-                                        inclusive = false
+                        Box(modifier = Modifier.padding(12.dp)) {
+                            BottomBar(
+                                selected = selectedDestination,
+                                onSelect = { destination ->
+                                    navController.navigate(destination.screen) {
+                                        launchSingleTop = true
+                                        popUpTo<Screen.Products> {
+                                            saveState = true
+                                            inclusive = false
+                                        }
+                                        restoreState = true
                                     }
-                                    restoreState = true
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }

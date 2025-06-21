@@ -1,6 +1,7 @@
 package org.mz.data.domain
 
 import dev.gitlive.firebase.auth.FirebaseUser
+import org.mz.killrs.shared.util.RequestState
 
 interface CustomerRepository {
     fun getCurrentUserId(): String?
@@ -9,4 +10,5 @@ interface CustomerRepository {
         onSuccess: () -> Unit,
         onFailure: (String) -> Unit
     )
+    suspend fun signOut(): RequestState<Unit>
 }

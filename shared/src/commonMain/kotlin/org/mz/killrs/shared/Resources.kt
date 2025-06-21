@@ -34,7 +34,6 @@ object Resources {
 
     object Image {
 
-        val ShoppingCart = Res.drawable.shopping_cart
 
         //  val Checkmark = Res.drawable.checkmark_image
         val GoogleLogo = Res.drawable.google_logo

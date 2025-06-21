@@ -34,12 +34,10 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
+            implementation(libs.messagebar.kmp)
 
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.compose.navigation)
-
-            implementation(libs.messagebar.kmp)
 
             implementation(project(path = ":shared"))
             implementation(project(path = ":data"))
@@ -56,7 +54,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.mz.killrs.home"
+    namespace = "org.mz.killrs.profile"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

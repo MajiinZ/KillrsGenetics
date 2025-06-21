@@ -15,5 +15,8 @@ sealed class Screen{
     data object Profile: Screen()
     @Serializable
     data object Categories: Screen()
+    @Serializable
+    data object SignOut: Screen()
+
 
 }

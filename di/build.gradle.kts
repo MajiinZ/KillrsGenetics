@@ -40,6 +40,8 @@ kotlin {
             implementation(project( ":feature:auth"))
             implementation(project(":shared"))
             implementation(project(":data"))
+            implementation(project(":navigation"))
+            implementation(project(":feature:home"))
 
 
         }

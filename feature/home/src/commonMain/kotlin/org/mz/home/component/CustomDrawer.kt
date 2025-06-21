@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.mz.home.domain.DrawerItem
 import org.mz.killrs.shared.Exo2FontRegular
 import org.mz.killrs.shared.FontSize
@@ -26,7 +27,8 @@ fun CustomDrawer(
     onCartClick: () -> Unit,
     onOrdersClick: () -> Unit,
     onAdminPanelClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    onSignOutClick: () -> Unit,
 ){
     Column (
         modifier = Modifier
@@ -53,7 +55,7 @@ fun CustomDrawer(
             fontSize = FontSize.REGULAR
         )
         Spacer(modifier = Modifier.height(50.dp))
-        DrawerItem.entries.take(5).forEach{ item ->
+        DrawerItem.entries.take(6).forEach{ item ->
             DrawerItemCard(
                 drawerItem = item,
                 onClick = {
@@ -63,6 +65,7 @@ fun CustomDrawer(
                         DrawerItem.CartFilled -> onCartClick()
                         DrawerItem.Orders -> onOrdersClick()
                         DrawerItem.Settings -> onSettingsClick()
+                        DrawerItem.SignOut -> {onSignOutClick()}
                         else -> {}
                     }
 

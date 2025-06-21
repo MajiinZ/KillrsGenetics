@@ -6,6 +6,7 @@ import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 import org.mz.data.domain.CustomerRepository
 import org.mz.killrs.shared.domain.Customer
+import org.mz.killrs.shared.util.RequestState
 
 class CustomerRepositoryImpl: CustomerRepository {
     override fun getCurrentUserId(): String? {
@@ -42,6 +43,15 @@ class CustomerRepositoryImpl: CustomerRepository {
             }
         }catch (e: Exception){
             onFailure("Error while creating a customer: ${e.message}")
+        }
+    }
+
+    override suspend fun signOut(): RequestState<Unit> {
+        return try {
+            Firebase.auth.signOut()
+            RequestState.Success(data = Unit)
+        } catch (e:Exception){
+            RequestState.Error("Error while signing out: ${e.message}")
         }
     }
 }
