@@ -34,6 +34,9 @@ plugins {
 include(":data")
 include(":data")
 include(":di")
+include(":feature:admin")
+include(":feature:admin")
+include(":feature:admin:manage_product")
 include(":feature:home")
 include(":feature:home")
 

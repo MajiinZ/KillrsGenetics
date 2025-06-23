@@ -7,7 +7,6 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    alias(libs.plugins.serialization)
 }
 
 kotlin {
@@ -24,6 +23,7 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -31,18 +31,20 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            ///implementation(libs.plugins.google.services)
-
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-            implementation(libs.kotlinx.serialization)
+            implementation(libs.messagebar.kmp)
 
-            implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+
+            implementation(project(path = ":shared"))
+            implementation(project(path = ":data"))
+
         }
         commonTest.dependencies {
-            implementation(libs.kotlin.test)
+            //implementation(libs.kotlin.test)
         }
         desktopMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -52,7 +54,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.mz.killrs.shared"
+    namespace = "org.mz.killrs.admin"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -66,8 +68,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.volley)
-    testImplementation(libs.testng)
+    implementation(libs.androidx.core)
+    //implementation(libs.androidx.navigation.compose.jvmstubs)
     debugImplementation(compose.uiTooling)
 }
 

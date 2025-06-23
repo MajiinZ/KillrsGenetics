@@ -15,7 +15,10 @@ data class Customer(
     val phoneNumber: PhoneNumber? = null,
     val dateOfBirth: String,
     val gender: String,
-    val cart: List<CartItem> = emptyList()
+    val cart: List<CartItem> = emptyList(),
+    val isAdmin: Boolean? = false
+
+
 
 
 )

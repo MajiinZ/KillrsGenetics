@@ -42,6 +42,8 @@ kotlin {
             implementation(project(":data"))
             implementation(project(":navigation"))
             implementation(project(":feature:home"))
+            implementation(project(":feature:profile"))
+            implementation(project(":feature:admin"))
 
 
         }

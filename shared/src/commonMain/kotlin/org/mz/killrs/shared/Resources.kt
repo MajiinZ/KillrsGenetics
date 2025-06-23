@@ -11,6 +11,8 @@ import killrsgenetics.shared.generated.resources.info
 import killrsgenetics.shared.generated.resources.killrs_logo_blk
 import killrsgenetics.shared.generated.resources.menu
 import killrsgenetics.shared.generated.resources.profile
+import killrsgenetics.shared.generated.resources.search
+import killrsgenetics.shared.generated.resources.settings
 import killrsgenetics.shared.generated.resources.shopping_cart
 
 
@@ -29,6 +31,19 @@ object Resources {
         val Delete = Res.drawable.delete
         val Info = Res.drawable.info
         val ShoppingCartFilled = Res.drawable.shopping_cart
+        val CategoriesFilled = Res.drawable.info
+        val DollarFilled = Res.drawable.add_a_photo
+        val HomeFilled = Res.drawable.home
+        val CloseFilled = Res.drawable.close
+        val ProfileFilled = Res.drawable.profile
+        val SeedFilled = Res.drawable.add_payment
+        val MenuFilled = Res.drawable.menu
+        val DeleteFilled = Res.drawable.delete
+        val InfoFilled = Res.drawable.info
+        val Search = Res.drawable.search
+        val BackArrow = Res.drawable.settings
+        val Minus = Res.drawable.close
+
 
     }
 

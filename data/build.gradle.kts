@@ -30,16 +30,15 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            ///implementation(libs.plugins.google.services)
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
 
-
             implementation(libs.firebase.firestore)
+            implementation(libs.firebase.storage)
             implementation(libs.auth.firebase.kmp)
 
             implementation(project(path = ":shared"))
-            //implementation(project(path = ":feature:auth"))
+
 
         }
         commonTest.dependencies {

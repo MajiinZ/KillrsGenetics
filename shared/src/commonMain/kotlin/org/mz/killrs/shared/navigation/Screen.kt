@@ -17,6 +17,11 @@ sealed class Screen{
     data object Categories: Screen()
     @Serializable
     data object SignOut: Screen()
+    @Serializable
+    data object Admin: Screen()
+    @Serializable
+    data object ManageProducts: Screen()
+
 
 
 }

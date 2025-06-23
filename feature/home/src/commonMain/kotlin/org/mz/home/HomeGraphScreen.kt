@@ -59,7 +59,8 @@ import rememberMessageBarState
 @Composable
 fun HomeGraphScreen(
     navigateToAuth: () -> Unit,
-    navigateToProfile: () -> Unit
+    navigateToProfile: () -> Unit,
+    navigateToAdmin: () -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
@@ -107,7 +108,9 @@ fun HomeGraphScreen(
             onCategoriesClick = {},
             onCartClick = {},
             onOrdersClick = {},
-            onAdminPanelClick = {},
+            onAdminPanelClick = {
+                navigateToAdmin()
+            },
             onSettingsClick = {},
             onSignOutClick = {
                 viewModel.signOut(

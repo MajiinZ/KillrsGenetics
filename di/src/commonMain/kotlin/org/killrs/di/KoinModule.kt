@@ -10,6 +10,9 @@ import org.mz.data.CustomerRepositoryImpl
 import org.mz.data.domain.CustomerRepository
 import org.mz.home.HomeGraphViewModel
 import org.mz.killrs.auth.AuthViewModel
+import org.mz.killrs.profile.ProfileViewModel
+//import org.mz.killrs.admin.AdminPanelViewModel
+
 
 
 val sharedModule = module {
@@ -17,6 +20,8 @@ val sharedModule = module {
 
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeGraphViewModel)
+    viewModelOf(::ProfileViewModel)
+    //viewModelOf(::AdminPanelViewModel)
 }
 
 fun initializeKoin(

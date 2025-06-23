@@ -1,10 +1,10 @@
 package org.mz.killrs.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import org.mz.admin.AdminPanelScreen
 import org.mz.home.HomeGraphScreen
 import org.mz.killrs.auth.AuthenticationScreen
 import org.mz.killrs.profile.ProfileScreen
@@ -37,11 +37,28 @@ fun SetupNavGraph(
                 },
                 navigateToProfile = {
                     navController.navigate(Screen.Profile)
+                },
+                navigateToAdmin = {
+                    navController.navigate(Screen.Admin)
                 }
             )
         }
         composable<Screen.Profile> {
-            ProfileScreen()
+            ProfileScreen(
+                navigateBack = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable<Screen.Admin> {
+            AdminPanelScreen(
+                navigateBack = {
+                    navController.navigateUp()
+                },
+                navigateToManageProduct = {
+
+                }
+            )
         }
     }
 }

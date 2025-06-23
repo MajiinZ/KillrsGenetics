@@ -123,7 +123,7 @@ fun AuthenticationScreen(
                                             navigateToHome()
                                         }
                                     },
-                                    onFailure = { message -> messageBarState.addError(message) },
+                                    onError = { message -> messageBarState.addError(message) },
 
                                     )
                                 messageBarState.addSuccess("Authentication successful")
