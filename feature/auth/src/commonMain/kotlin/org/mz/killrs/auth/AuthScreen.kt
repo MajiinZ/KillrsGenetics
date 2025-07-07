@@ -44,7 +44,8 @@ import rememberMessageBarState
 
 @Composable
 fun AuthenticationScreen(
-    navigateToHome: () -> Unit
+    navigateToHome: () -> Unit,
+    ///navigateToManageProduct: () -> Unit,
 ) {
 
     val scope = rememberCoroutineScope()

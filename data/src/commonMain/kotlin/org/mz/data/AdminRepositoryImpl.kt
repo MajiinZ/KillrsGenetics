@@ -98,7 +98,8 @@ class AdminRepositoryImpl : AdminRepository {
                                 price = document.get(field = "price"),
                                 isPopular = document.get(field = "isPopular"),
                                 isDiscounted = document.get(field = "isDiscounted"),
-                                isNew = document.get(field = "isNew")
+                                isNew = document.get(field = "isNew"),
+                                createdAt = document.get(field = "createdAt")
                             )
                         }
                         send(RequestState.Success(data = products.map { it.copy(title = it.title.uppercase()) }))
@@ -278,7 +279,9 @@ class AdminRepositoryImpl : AdminRepository {
                                     price = document.get(field = "price"),
                                     isPopular = document.get(field = "isPopular"),
                                     isDiscounted = document.get(field = "isDiscounted"),
-                                    isNew = document.get(field = "isNew")
+                                    isNew = document.get(field = "isNew"),
+                                    strains = document.get(field = "strains"),
+                                    createdAt = document.get(field = "createdAt")
                                 )
                             }
                             send(

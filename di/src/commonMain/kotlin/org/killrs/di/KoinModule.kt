@@ -6,22 +6,26 @@ import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import org.mz.data.AdminRepositoryImpl
 import org.mz.data.CustomerRepositoryImpl
+import org.mz.data.domain.AdminRepository
 import org.mz.data.domain.CustomerRepository
 import org.mz.home.HomeGraphViewModel
 import org.mz.killrs.auth.AuthViewModel
+import org.mz.killrs.manage_product.ManageProductViewModel
 import org.mz.killrs.profile.ProfileViewModel
-//import org.mz.killrs.admin.AdminPanelViewModel
-
-
+import org.mz.admin.AdminPanelViewModel
+import org.mz.killrs.manage_product.PhotoPicker
 
 val sharedModule = module {
     single<CustomerRepository>{CustomerRepositoryImpl()}
-
+    single<AdminRepository>{ AdminRepositoryImpl() }
+    single<PhotoPicker> { PhotoPicker() }
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeGraphViewModel)
     viewModelOf(::ProfileViewModel)
-    //viewModelOf(::AdminPanelViewModel)
+    viewModelOf(::ManageProductViewModel)
+    viewModelOf(::AdminPanelViewModel)
 }
 
 fun initializeKoin(

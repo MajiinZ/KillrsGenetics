@@ -42,6 +42,10 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.firebase.firestore)
+            implementation(libs.firebase.storage)
+            implementation(libs.firebase.app)
+            implementation(libs.firebase.common)
+            implementation(libs.firebase.common.ktx)
 
 
             implementation(libs.coil3)

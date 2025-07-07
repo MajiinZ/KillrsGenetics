@@ -47,6 +47,8 @@ kotlin {
             implementation(project(path = ":feature:home"))
             implementation(project(path = ":feature:profile"))
             implementation(project(path = ":feature:admin"))
+            implementation(project(path = ":feature:admin:manage_product"))
+
 
         }
         commonTest.dependencies {

@@ -7,32 +7,33 @@ import androidx.navigation.compose.rememberNavController
 import org.mz.admin.AdminPanelScreen
 import org.mz.home.HomeGraphScreen
 import org.mz.killrs.auth.AuthenticationScreen
+import org.mz.killrs.manage_product.ManageProductScreen
 import org.mz.killrs.profile.ProfileScreen
 import org.mz.killrs.shared.navigation.Screen
 
 @Composable
 fun SetupNavGraph(
     startDestination: Screen = Screen.Auth
-){
+) {
     val navController = rememberNavController()
     NavHost(
         navController = navController,
         startDestination = Screen.Auth
-    ){
+    ) {
         composable<Screen.Auth> {
             AuthenticationScreen(
                 navigateToHome = {
-                    navController.navigate(Screen.HomeGraph){
-                        popUpTo<Screen.Auth>{inclusive = true }
+                    navController.navigate(Screen.HomeGraph) {
+                        popUpTo<Screen.Auth> { inclusive = true }
                     }
-                }
+                },
             )
         }
         composable<Screen.HomeGraph> {
             HomeGraphScreen(
                 navigateToAuth = {
-                    navController.navigate(Screen.Auth){
-                        popUpTo<Screen.HomeGraph>{inclusive = true }
+                    navController.navigate(Screen.Auth) {
+                        popUpTo<Screen.HomeGraph> { inclusive = true }
                     }
                 },
                 navigateToProfile = {
@@ -56,8 +57,15 @@ fun SetupNavGraph(
                     navController.navigateUp()
                 },
                 navigateToManageProduct = {
-
+                    navController.navigate(Screen.ManageProduct)
                 }
+            )
+        }
+        composable<Screen.ManageProduct> {
+            ManageProductScreen(
+                navigateBack = {
+                    navController.navigateUp()
+                },
             )
         }
     }

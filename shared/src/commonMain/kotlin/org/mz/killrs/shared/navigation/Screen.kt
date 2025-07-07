@@ -20,7 +20,7 @@ sealed class Screen{
     @Serializable
     data object Admin: Screen()
     @Serializable
-    data object ManageProducts: Screen()
+    data object ManageProduct: Screen()
 
 
 
