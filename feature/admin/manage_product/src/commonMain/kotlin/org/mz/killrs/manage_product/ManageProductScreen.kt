@@ -41,6 +41,7 @@ fun ManageProductScreen(
     val messageBarState = rememberMessageBarState()
     val photoPicker = koinInject<PhotoPicker>()
     var showCategoriesDialog by remember { mutableStateOf(false) }
+    val thumbNailUploaderState = viewModel.thumbnailUploaderState
 
     photoPicker.InitializePhotoPicker(
         onImageSelect = { file ->
@@ -58,7 +59,7 @@ fun ManageProductScreen(
             onConfirmClick = { selectedCategory ->
                 viewModel.updateCategory(selectedCategory)
                 showCategoriesDialog = false
-            }
+            },
         )
     }
 
@@ -142,15 +143,42 @@ fun ManageProductScreen(
                                 LoadingCard(modifier = Modifier.fillMaxSize())
                             },
                             onSuccess = {
-                                AsyncImage(
-                                    modifier = Modifier.fillMaxSize(),
-                                    model = ImageRequest.Builder(LocalPlatformContext.current)
-                                        .data(screenState.thumbnail)
-                                        .crossfade(true)
-                                        .build(),
-                                    contentDescription = "Product Image",
-                                    contentScale = ContentScale.Crop
-                                )
+                                Box(
+                                    modifier = Modifier.fillMaxSize()
+                                ){
+                                    AsyncImage(
+                                        modifier = Modifier.fillMaxSize(),
+                                        model = ImageRequest.Builder(LocalPlatformContext.current)
+                                            .data(screenState.thumbnail)
+                                            .crossfade(true)
+                                            .build(),
+                                        contentDescription = "Product Image",
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(size = 6.dp))
+                                            .padding(
+                                                top = 12.dp,
+                                                end = 12.dp
+                                            )
+                                            .background(ButtonPrimary)
+                                            .clickable {
+                                                viewModel.deleteThumbnailFromStorage(
+                                                    onSuccess = { messageBarState.addSuccess("Thumbnail deleted successfully!") },
+                                                    onError = { messageBarState.addError(it) }
+                                                )
+                                            }
+                                            .padding(12.dp),
+                                        contentAlignment = Alignment.Center
+                                    ){
+                                        Icon(
+                                            modifier = Modifier.size(14.dp),
+                                            painter = painterResource(Resources.Icon.DeleteFilled),
+                                            contentDescription = "Delete icon",
+                                        )
+                                    }
+                                }
                             },
                             onError = { message ->
                                 ErrorCard(message = message)

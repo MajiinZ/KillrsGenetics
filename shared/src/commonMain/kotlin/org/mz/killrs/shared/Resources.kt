@@ -1,6 +1,7 @@
 package org.mz.killrs.shared
 
 import killrsgenetics.shared.generated.resources.Res
+import killrsgenetics.shared.generated.resources.add
 import killrsgenetics.shared.generated.resources.add_a_photo
 import killrsgenetics.shared.generated.resources.add_payment
 import killrsgenetics.shared.generated.resources.close
@@ -14,6 +15,7 @@ import killrsgenetics.shared.generated.resources.profile
 import killrsgenetics.shared.generated.resources.search
 import killrsgenetics.shared.generated.resources.settings
 import killrsgenetics.shared.generated.resources.shopping_cart
+import killrsgenetics.shared.generated.resources.product
 
 
 object Resources {
@@ -36,7 +38,7 @@ object Resources {
         val HomeFilled = Res.drawable.home
         val CloseFilled = Res.drawable.close
         val ProfileFilled = Res.drawable.profile
-        val SeedFilled = Res.drawable.add_payment
+        val AddProduct = Res.drawable.add
         val MenuFilled = Res.drawable.menu
         val DeleteFilled = Res.drawable.delete
         val InfoFilled = Res.drawable.info

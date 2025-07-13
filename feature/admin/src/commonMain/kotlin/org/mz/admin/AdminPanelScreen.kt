@@ -150,7 +150,7 @@ fun AdminPanelScreen(
                 contentColor = IconPrimary,
                 content = {
                     Icon(
-                        painter = painterResource(Resources.Icon.SeedFilled),
+                        painter = painterResource(Resources.Icon.ProfileFilled),
                         contentDescription = "Add icon"
                     )
                 }

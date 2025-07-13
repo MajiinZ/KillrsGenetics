@@ -25,6 +25,8 @@ kotlin {
 
         androidMain.dependencies {
             implementation(libs.ktor.android.client)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
         }
 
         commonMain.dependencies {

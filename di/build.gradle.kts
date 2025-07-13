@@ -71,6 +71,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
+dependencies {
+    implementation(project(":feature:admin:manage_product"))
+}
 
 compose.desktop {
     application {

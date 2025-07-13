@@ -40,6 +40,12 @@ kotlin {
 
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+
+            implementation(libs.coil3)
+            implementation(libs.coil3.compose)
+            implementation(libs.coil3.compose.core)
+            implementation(libs.coil3.network.ktor)
+            implementation(libs.coil3)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

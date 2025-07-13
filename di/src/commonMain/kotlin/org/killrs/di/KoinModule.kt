@@ -1,11 +1,11 @@
 package org.killrs.di
 
-//import org.koin.compose.viewmodel.dsl.viewModelOf
-
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
+import org.mz.admin.AdminPanelViewModel
 import org.mz.data.AdminRepositoryImpl
 import org.mz.data.CustomerRepositoryImpl
 import org.mz.data.domain.AdminRepository
@@ -14,13 +14,13 @@ import org.mz.home.HomeGraphViewModel
 import org.mz.killrs.auth.AuthViewModel
 import org.mz.killrs.manage_product.ManageProductViewModel
 import org.mz.killrs.profile.ProfileViewModel
-import org.mz.admin.AdminPanelViewModel
 import org.mz.killrs.manage_product.PhotoPicker
 
 val sharedModule = module {
     single<CustomerRepository>{CustomerRepositoryImpl()}
     single<AdminRepository>{ AdminRepositoryImpl() }
-    single<PhotoPicker> { PhotoPicker() }
+    
+
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeGraphViewModel)
     viewModelOf(::ProfileViewModel)
@@ -28,11 +28,15 @@ val sharedModule = module {
     viewModelOf(::AdminPanelViewModel)
 }
 
+
+
+expect val targetModule: Module
+
 fun initializeKoin(
     config: (KoinApplication.() -> Unit)? = null,
 ) {
     startKoin {
         config?.invoke(this)
-        modules(sharedModule)
+        modules(sharedModule, targetModule)
     }
 }
