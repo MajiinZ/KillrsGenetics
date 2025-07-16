@@ -32,14 +32,9 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 include(":data")
-include(":data")
 include(":di")
 include(":feature:admin")
-include(":feature:admin")
 include(":feature:admin:manage_product")
-include(":feature:home")
-include(":feature:home")
-
 include(":feature:home")
 include(":feature:profile")
 include(":feature:auth")
@@ -48,3 +43,4 @@ include(":composeApp")
 include(":shared")
 include(":server")
 include(":shared")
+include(":webApp")

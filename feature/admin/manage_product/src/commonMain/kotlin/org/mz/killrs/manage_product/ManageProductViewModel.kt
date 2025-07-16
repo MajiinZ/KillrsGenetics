@@ -154,13 +154,10 @@ class ManageProductViewModel(
             return
         }
 
-        // Begin loading state
         updateThumbnailUploaderState(RequestState.Loading)
 
-        // Launch coroutine for suspend calls
         viewModelScope.launch {
             try {
-                // This is a suspend function — must be inside coroutine
                 val downloadUrl = adminRepository.uploadImageToStorage(file)
 
                 if (downloadUrl.isNullOrEmpty()) {
@@ -168,7 +165,6 @@ class ManageProductViewModel(
                 }
 
                 if (productId.isNotEmpty()) {
-                    // Update product's thumbnail in the database
                     adminRepository.updateProductThumbnail(
                         productId = productId,
                         downloadUrl = downloadUrl,
@@ -182,12 +178,10 @@ class ManageProductViewModel(
                         }
                     )
                 } else {
-                    // Just update local state
                     updateThumbnail(downloadUrl)
                     updateThumbnailUploaderState(RequestState.Success(Unit))
                     onSuccess()
                 }
-
             } catch (e: Exception) {
                 updateThumbnailUploaderState(RequestState.Error("Error while uploading: ${e.message}"))
             }

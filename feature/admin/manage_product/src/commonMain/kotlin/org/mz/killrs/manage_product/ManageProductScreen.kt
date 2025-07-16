@@ -29,6 +29,7 @@ import org.mz.killrs.shared.*
 import org.mz.killrs.shared.component.*
 import org.mz.killrs.shared.component.dialog.CategoriesDialog
 import org.mz.killrs.shared.util.DisplayResult
+import org.mz.killrs.shared.util.RequestState
 import rememberMessageBarState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,8 +44,13 @@ fun ManageProductScreen(
     var showCategoriesDialog by remember { mutableStateOf(false) }
     val thumbNailUploaderState = viewModel.thumbnailUploaderState
 
+    // Initialize Photo Picker
     photoPicker.InitializePhotoPicker(
         onImageSelect = { file ->
+            if (file == null) {
+                messageBarState.addError("No image selected. Please try again.")
+                return@InitializePhotoPicker
+            }
             viewModel.uploadThumbnailToStorage(
                 file = file,
                 onSuccess = { messageBarState.addSuccess("Thumbnail uploaded successfully!") }
@@ -52,6 +58,7 @@ fun ManageProductScreen(
         }
     )
 
+    // Category Dialog
     AnimatedVisibility(visible = showCategoriesDialog) {
         CategoriesDialog(
             category = screenState.category,
@@ -118,6 +125,7 @@ fun ManageProductScreen(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    // Thumbnail Uploader
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -125,7 +133,7 @@ fun ManageProductScreen(
                             .clip(RoundedCornerShape(12.dp))
                             .border(1.dp, BorderIdle, RoundedCornerShape(12.dp))
                             .background(SurfaceLighter)
-                            .clickable(enabled = viewModel.thumbnailUploaderState.isIdle()) {
+                            .clickable(enabled = thumbNailUploaderState is RequestState.Idle) {
                                 photoPicker.open()
                             },
                         contentAlignment = Alignment.Center
@@ -143,9 +151,7 @@ fun ManageProductScreen(
                                 LoadingCard(modifier = Modifier.fillMaxSize())
                             },
                             onSuccess = {
-                                Box(
-                                    modifier = Modifier.fillMaxSize()
-                                ){
+                                Box(modifier = Modifier.fillMaxSize()) {
                                     AsyncImage(
                                         modifier = Modifier.fillMaxSize(),
                                         model = ImageRequest.Builder(LocalPlatformContext.current)
@@ -157,21 +163,23 @@ fun ManageProductScreen(
                                     )
                                     Box(
                                         modifier = Modifier
-                                            .clip(RoundedCornerShape(size = 6.dp))
-                                            .padding(
-                                                top = 12.dp,
-                                                end = 12.dp
-                                            )
+                                            .align(Alignment.TopEnd)
+                                            .padding(12.dp)
+                                            .clip(RoundedCornerShape(6.dp))
                                             .background(ButtonPrimary)
                                             .clickable {
                                                 viewModel.deleteThumbnailFromStorage(
-                                                    onSuccess = { messageBarState.addSuccess("Thumbnail deleted successfully!") },
-                                                    onError = { messageBarState.addError(it) }
+                                                    onSuccess = {
+                                                        messageBarState.addSuccess("Thumbnail deleted successfully!")
+                                                    },
+                                                    onError = {
+                                                        messageBarState.addError(it)
+                                                    }
                                                 )
                                             }
                                             .padding(12.dp),
                                         contentAlignment = Alignment.Center
-                                    ){
+                                    ) {
                                         Icon(
                                             modifier = Modifier.size(14.dp),
                                             painter = painterResource(Resources.Icon.DeleteFilled),
@@ -181,10 +189,12 @@ fun ManageProductScreen(
                                 }
                             },
                             onError = { message ->
-                                ErrorCard(message = message)
+                                ErrorCard(message = message ?: "Unknown error occurred while loading image.")
                             }
                         )
                     }
+
+                    // Form Fields
                     CustomTextField(
                         value = screenState.title,
                         onValueChange = viewModel::updateTitle,
@@ -203,8 +213,10 @@ fun ManageProductScreen(
                         onClick = { showCategoriesDialog = true }
                     )
                     CustomTextField(
-                        value = "${screenState.amountOfSeeds ?: ""}",
-                        onValueChange = { viewModel.updateAmountOfSeeds(it.toIntOrNull() ?: 0) },
+                        value = screenState.amountOfSeeds?.toString() ?: "",
+                        onValueChange = {
+                            viewModel.updateAmountOfSeeds(it.toIntOrNull())
+                        },
                         placeholder = "Amount of Seeds",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
@@ -214,13 +226,14 @@ fun ManageProductScreen(
                         placeholder = "Strains"
                     )
                     CustomTextField(
-                        value = "${screenState.price}",
-                        onValueChange = { viewModel.updatePrice(it.toDoubleOrNull() ?: 0.0) },
+                        value = screenState.price.toString(),
+                        onValueChange = {
+                            viewModel.updatePrice(it.toDoubleOrNull() ?: screenState.price)
+                        },
                         placeholder = "Price",
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                     )
 
-                    // Save Product Button
                     Button(
                         onClick = {
                             if (viewModel.isFormValid) {
@@ -244,7 +257,6 @@ fun ManageProductScreen(
                             } else {
                                 messageBarState.addError("Please fill in all required fields.")
                             }
-
                         },
                         modifier = Modifier
                             .fillMaxWidth()

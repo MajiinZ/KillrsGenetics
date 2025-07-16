@@ -31,6 +31,8 @@ kotlin {
         }
     }
 
+
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -134,8 +136,7 @@ compose.desktop {
     }
 }
 
-tasks.matching {
-    it.name == "jsBrowserTest" || it.name == "jsTest" || it.name == "jsNodeTest"
-}.configureEach {
+// Disable JS test tasks to avoid build crash
+tasks.matching { it.name == "jsBrowserTest" || it.name == "jsTest" }.configureEach {
     enabled = false
 }

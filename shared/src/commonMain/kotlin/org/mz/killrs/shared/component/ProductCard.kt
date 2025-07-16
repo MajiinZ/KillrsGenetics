@@ -96,9 +96,18 @@ fun ProductCard(
             ){
                 Row{
                     Icon(
+                        modifier = Modifier.size(14.dp),
                         painter = painterResource(Resources.Icon.Dollar),
                         contentDescription = "Price icon",
                         tint = IconPrimary
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        text = product.category,
+                        fontFamily = Exo2FontRegular(),
+                        fontSize = FontSize.EXTRA_SMALL,
+                        color = TextPrimary,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
