@@ -2,26 +2,34 @@ package org.mz.killrs.shared.navigation
 
 import kotlinx.serialization.Serializable
 
-sealed class Screen{
+sealed class Screen {
     @Serializable
-    data object Auth: Screen()
-    @Serializable
-    data object HomeGraph: Screen()
-    @Serializable
-    data object Products: Screen()
-    @Serializable
-    data object ShoppingCart: Screen()
-    @Serializable
-    data object Profile: Screen()
-    @Serializable
-    data object Categories: Screen()
-    @Serializable
-    data object SignOut: Screen()
-    @Serializable
-    data object Admin: Screen()
-    @Serializable
-    data object ManageProduct: Screen()
+    data object Auth : Screen()
 
+    @Serializable
+    data object HomeGraph : Screen()
 
+    @Serializable
+    data object Products : Screen()
+
+    @Serializable
+    data object ShoppingCart : Screen()
+
+    @Serializable
+    data object Profile : Screen()
+
+    @Serializable
+    data object Categories : Screen()
+
+    @Serializable
+    data object SignOut : Screen()
+
+    @Serializable
+    data object Admin : Screen()
+
+    @Serializable
+    data class ManageProduct(
+        val id: String? = null
+    ) : Screen()
 
 }

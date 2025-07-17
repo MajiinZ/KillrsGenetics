@@ -34,6 +34,7 @@ fun ProductCard(
     onClick: (String) -> Unit,
     onAddToCart: (String) -> Unit,
     onRemoveFromCart: (String) -> Unit,
+    onEdit: (String) -> Unit
 
 
     ) {

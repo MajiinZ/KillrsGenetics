@@ -56,8 +56,8 @@ fun SetupNavGraph(
                 navigateBack = {
                     navController.navigateUp()
                 },
-                navigateToManageProduct = {
-                    navController.navigate(Screen.ManageProduct)
+                navigateToManageProduct = { id ->
+                    navController.navigate(Screen.ManageProduct(id = id))
                 }
             )
         }
@@ -66,6 +66,10 @@ fun SetupNavGraph(
                 navigateBack = {
                     navController.navigateUp()
                 },
+                navigateToEdit = {
+                    navController.navigate(Screen.ManageProduct)
+                }
+
             )
         }
     }

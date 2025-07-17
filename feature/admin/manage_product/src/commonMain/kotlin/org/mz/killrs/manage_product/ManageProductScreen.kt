@@ -36,6 +36,8 @@ import rememberMessageBarState
 @Composable
 fun ManageProductScreen(
     navigateBack: () -> Unit,
+    productId: String? = null,
+    navigateToEdit: (String) -> Unit
 ) {
     val viewModel = koinViewModel<ManageProductViewModel>()
     val screenState = viewModel.screenState
