@@ -89,7 +89,7 @@ class CustomerRepositoryImpl : CustomerRepository {
                                 cart = document.get(field = "cart"),
                                 isAdmin = privateDataDocument.get(field = "isAdmin"),
                                 dateOfBirth = document.get(field = "dateOfBirth"),
-                                gender = document.get(field = "gender")
+                                gender = document.get(field = "gender"),
                             )
                             send(RequestState.Success(data = customer))
                         } else {
@@ -141,7 +141,7 @@ class CustomerRepositoryImpl : CustomerRepository {
         }
     }
 
-     suspend fun addItemToCard(
+    suspend fun addItemToCard(
         cartItem: CartItem,
         onSuccess: () -> Unit,
         onError: (String) -> Unit,

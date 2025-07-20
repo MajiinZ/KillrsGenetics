@@ -23,7 +23,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import org.jetbrains.compose.resources.painterResource
 import org.mz.killrs.shared.*
-
 import org.mz.killrs.shared.domain.Product
 import org.mz.killrs.shared.domain.ProductCategory
 
@@ -35,53 +34,51 @@ fun ProductCard(
     onAddToCart: (String) -> Unit,
     onRemoveFromCart: (String) -> Unit,
     onEdit: (String) -> Unit
-
-
-    ) {
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(size = 12.dp))
-            .border(
-                width = 1.dp,
-                color = BorderIdle,
-                shape = RoundedCornerShape(size = 12.dp)
-            )
+            .height(IntrinsicSize.Min)
+            .clip(RoundedCornerShape(12.dp))
+            .border(1.dp, BorderIdle, RoundedCornerShape(12.dp))
             .background(SurfaceLighter)
             .clickable { onClick(product.id) }
     ) {
         AsyncImage(
             modifier = Modifier
-                .width(100.dp)
-                .border(
-                    width = 1.dp,
-                    color = BorderIdle,
-                    shape = RoundedCornerShape(size = 12.dp)
-                ),
+                .width(120.dp)
+                .fillMaxHeight()
+                .clip(RoundedCornerShape(12.dp))
+                .border(1.dp, BorderIdle, RoundedCornerShape(12.dp)),
             model = ImageRequest.Builder(LocalPlatformContext.current)
                 .data(product.thumbnail)
-                .crossfade(enable = true)
+                .crossfade(true)
                 .build(),
             contentDescription = "Product thumbnail image",
             contentScale = ContentScale.Crop
         )
+
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(all = 12.dp),
-            horizontalAlignment = Alignment.Start,
+                .weight(1f)
+                .padding(12.dp),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 text = product.title,
                 fontFamily = Exo2FontRegular(),
                 fontSize = FontSize.REGULAR,
                 color = TextPrimary,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
+
             Spacer(modifier = Modifier.height(4.dp))
+
             Text(
-                modifier = Modifier.alpha(Alpha.HALF),
                 text = product.description,
+                modifier = Modifier.alpha(Alpha.HALF),
                 fontFamily = Exo2FontRegular(),
                 fontSize = FontSize.REGULAR,
                 color = TextPrimary,
@@ -89,30 +86,44 @@ fun ProductCard(
                 maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(4.dp))
-            Row (
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Row{
-                    Icon(
-                        modifier = Modifier.size(14.dp),
-                        painter = painterResource(Resources.Icon.Dollar),
-                        contentDescription = "Price icon",
-                        tint = IconPrimary
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = product.category,
-                        fontFamily = Exo2FontRegular(),
-                        fontSize = FontSize.EXTRA_SMALL,
-                        color = TextPrimary,
-                        fontWeight = FontWeight.Medium
-                    )
+            ) {
+                AnimatedContent(targetState = product.category) { category ->
+                    if (ProductCategory.valueOf(category) == ProductCategory.Sativa) {
+                        Spacer(modifier = Modifier.weight(1f))
+                    } else {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                modifier = Modifier.size(14.dp),
+                                painter = painterResource(Resources.Icon.Dollar),
+                                contentDescription = "Price icon",
+                                tint = IconPrimary
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = category,
+                                fontFamily = Exo2FontRegular(),
+                                fontSize = FontSize.EXTRA_SMALL,
+                                color = TextPrimary,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
                 }
+
+                Text(
+                    text = "$${product.price}",
+                    fontSize = FontSize.EXTRA_REGULAR,
+                    fontWeight = FontWeight.Medium,
+                    color = TextSecondary
+                )
             }
         }
     }
-
 }

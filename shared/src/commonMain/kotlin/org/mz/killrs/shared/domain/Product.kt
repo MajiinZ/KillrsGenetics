@@ -26,20 +26,16 @@ enum class ProductCategory(
     val color: Color
 ){
     Indica(
-        title = "",
+        title = "Indica",
         color = CategoryGreen
     ),
     Sativa(
-        title = "",
+        title = "Sativa",
         color = CategoryRed
     ),
     Hybrid(
-        title = "",
+        title = "Hybrid",
         color = Color.Yellow
-    ),
-    Categories(
-        title = "",
-        color = Color.Transparent
     ),
 
 }

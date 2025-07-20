@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +53,7 @@ import org.mz.killrs.shared.SurfaceLighter
 import org.mz.killrs.shared.TextPrimary
 import org.mz.killrs.shared.navigation.Screen
 import org.mz.killrs.shared.util.getScreenWidth
+import org.mz.products_overview.ProductsOverviewScreen
 import rememberMessageBarState
 
 
@@ -93,6 +95,7 @@ fun HomeGraphScreen(
     )
 
     val viewModel = koinViewModel<HomeGraphViewModel>()
+    val customer by viewModel.customer.collectAsState()
     val messageBarState = rememberMessageBarState()
 
     Box(
@@ -102,6 +105,7 @@ fun HomeGraphScreen(
             .systemBarsPadding()
     ) {
         CustomDrawer(
+            customer = customer,
             onProfileClick = {
                 navigateToProfile()
             },
@@ -195,9 +199,14 @@ fun HomeGraphScreen(
                         NavHost(
                             modifier = Modifier.weight(1f),
                             navController = navController,
-                            startDestination = Screen.Products
+                            startDestination = Screen.ProductsOverview
                         ) {
-                            composable<Screen.Products> { }
+                            composable<Screen.ProductsOverview> {
+                                ProductsOverviewScreen()
+                            }
+
+
+
                             composable<Screen.ShoppingCart> { }
                             composable<Screen.Profile> { }
                             composable<Screen.Categories> { }
@@ -211,7 +220,7 @@ fun HomeGraphScreen(
                                 onSelect = { destination ->
                                     navController.navigate(destination.screen) {
                                         launchSingleTop = true
-                                        popUpTo<Screen.Products> {
+                                        popUpTo<Screen.ProductsOverview> {
                                             saveState = true
                                             inclusive = false
                                         }

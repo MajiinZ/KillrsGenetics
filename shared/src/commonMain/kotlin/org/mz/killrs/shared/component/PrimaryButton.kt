@@ -28,7 +28,8 @@ fun PrimaryButton(
     text: String,
     icon: DrawableResource? = null,
     enabled: Boolean = true,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+
 ) {
     Button(
         modifier = modifier.fillMaxWidth(),

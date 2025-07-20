@@ -1,17 +1,42 @@
 package org.mz.killrs.manage_product
 
+
 import ContentWithMessageBar
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,8 +50,25 @@ import coil3.request.crossfade
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
-import org.mz.killrs.shared.*
-import org.mz.killrs.shared.component.*
+import org.mz.killrs.shared.BorderIdle
+import org.mz.killrs.shared.ButtonPrimary
+import org.mz.killrs.shared.Exo2FontRegular
+import org.mz.killrs.shared.FontSize
+import org.mz.killrs.shared.IconPrimary
+import org.mz.killrs.shared.Resources
+import org.mz.killrs.shared.Surface
+import org.mz.killrs.shared.SurfaceBrand
+import org.mz.killrs.shared.SurfaceDarker
+import org.mz.killrs.shared.SurfaceError
+import org.mz.killrs.shared.SurfaceLighter
+import org.mz.killrs.shared.SurfaceSecondary
+import org.mz.killrs.shared.TextPrimary
+import org.mz.killrs.shared.TextWhite
+import org.mz.killrs.shared.component.AlertTextField
+import org.mz.killrs.shared.component.CustomTextField
+import org.mz.killrs.shared.component.ErrorCard
+import org.mz.killrs.shared.component.LoadingCard
+import org.mz.killrs.shared.component.PrimaryButton
 import org.mz.killrs.shared.component.dialog.CategoriesDialog
 import org.mz.killrs.shared.util.DisplayResult
 import org.mz.killrs.shared.util.RequestState
@@ -37,16 +79,17 @@ import rememberMessageBarState
 fun ManageProductScreen(
     navigateBack: () -> Unit,
     productId: String? = null,
-    navigateToEdit: (String) -> Unit
+    navigateToEdit: (String) -> Unit,
+    id: String? = null
 ) {
     val viewModel = koinViewModel<ManageProductViewModel>()
     val screenState = viewModel.screenState
     val messageBarState = rememberMessageBarState()
     val photoPicker = koinInject<PhotoPicker>()
     var showCategoriesDialog by remember { mutableStateOf(false) }
+    var dropDownMenuOpened by remember { mutableStateOf(false) }
     val thumbNailUploaderState = viewModel.thumbnailUploaderState
 
-    // Initialize Photo Picker
     photoPicker.InitializePhotoPicker(
         onImageSelect = { file ->
             if (file == null) {
@@ -60,7 +103,6 @@ fun ManageProductScreen(
         }
     )
 
-    // Category Dialog
     AnimatedVisibility(visible = showCategoriesDialog) {
         CategoriesDialog(
             category = screenState.category,
@@ -68,7 +110,7 @@ fun ManageProductScreen(
             onConfirmClick = { selectedCategory ->
                 viewModel.updateCategory(selectedCategory)
                 showCategoriesDialog = false
-            },
+            }
         )
     }
 
@@ -78,7 +120,7 @@ fun ManageProductScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Manage Product",
+                        text = if (id == null) "New Product" else "Edit Product",
                         fontFamily = Exo2FontRegular(),
                         fontSize = FontSize.LARGE,
                         color = TextPrimary
@@ -93,6 +135,43 @@ fun ManageProductScreen(
                         )
                     }
                 },
+                actions = {
+                    Box {
+                        IconButton(onClick = { dropDownMenuOpened = true }) {
+                            Icon(
+                                painter = painterResource(Resources.Icon.AddProduct),
+                                contentDescription = "Vertical menu icon",
+                                tint = IconPrimary
+                            )
+                        }
+                        DropdownMenu(
+                            containerColor = Surface,
+                            expanded = dropDownMenuOpened,
+                            onDismissRequest = { dropDownMenuOpened = false }
+                        ) {
+                            DropdownMenuItem(
+                                leadingIcon = {
+                                    Icon(
+                                        painter = painterResource(Resources.Icon.AddProduct),
+                                        contentDescription = "Delete icon",
+                                        tint = IconPrimary
+                                    )
+                                },
+                                text = { Text(text = "Delete", color = TextPrimary) },
+                                onClick = {
+                                    dropDownMenuOpened = false
+                                    viewModel.deleteProduct(
+                                        onSuccess = navigateBack,
+                                        onError = { message -> messageBarState.addError(message) }
+                                    )
+
+                                },
+                            )
+                        }
+                    }
+
+
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Surface,
                     navigationIconContentColor = IconPrimary,
@@ -102,7 +181,6 @@ fun ManageProductScreen(
             )
         }
     ) { padding ->
-
         ContentWithMessageBar(
             modifier = Modifier.padding(
                 top = padding.calculateTopPadding(),
@@ -127,11 +205,11 @@ fun ManageProductScreen(
                         .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Thumbnail Uploader
+                    // Thumbnail uploader
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp)
+                            .height(200.dp)
                             .clip(RoundedCornerShape(12.dp))
                             .border(1.dp, BorderIdle, RoundedCornerShape(12.dp))
                             .background(SurfaceLighter)
@@ -185,18 +263,21 @@ fun ManageProductScreen(
                                         Icon(
                                             modifier = Modifier.size(14.dp),
                                             painter = painterResource(Resources.Icon.DeleteFilled),
-                                            contentDescription = "Delete icon",
+                                            contentDescription = "Delete icon"
                                         )
                                     }
                                 }
                             },
                             onError = { message ->
-                                ErrorCard(message = message ?: "Unknown error occurred while loading image.")
+                                ErrorCard(
+                                    message = message
+                                        ?: "Unknown error occurred while loading image."
+                                )
                             }
                         )
                     }
 
-                    // Form Fields
+                    // Form fields
                     CustomTextField(
                         value = screenState.title,
                         onValueChange = viewModel::updateTitle,
@@ -233,39 +314,111 @@ fun ManageProductScreen(
                             viewModel.updatePrice(it.toDoubleOrNull() ?: screenState.price)
                         },
                         placeholder = "Price",
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                        keyboardType = KeyboardType.Number
                     )
-
-                    Button(
-                        onClick = {
-                            if (viewModel.isFormValid) {
-                                if (viewModel.isEditing) {
-                                    viewModel.updateProduct(
-                                        onSuccess = {
-                                            messageBarState.addSuccess("Product updated successfully!")
-                                            navigateBack()
-                                        },
-                                        onError = { messageBarState.addError(it) }
-                                    )
-                                } else {
-                                    viewModel.createNewProduct(
-                                        onSuccess = {
-                                            messageBarState.addSuccess("Product created successfully!")
-                                            navigateBack()
-                                        },
-                                        onError = { messageBarState.addError(it) }
-                                    )
-                                }
-                            } else {
-                                messageBarState.addError("Please fill in all required fields.")
-                            }
-                        },
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp)
+                            .fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
-                        Text("Save Product")
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "New",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isNew,
+                                onCheckedChange = viewModel::updateNew,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceSecondary,
+                                    uncheckedTrackColor = SurfaceDarker,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface
+                                )
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "Popular",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isPopular,
+                                onCheckedChange = viewModel::updatePopular,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceSecondary,
+                                    uncheckedTrackColor = SurfaceDarker,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface,
+                                    checkedBorderColor = SurfaceSecondary,
+                                    uncheckedBorderColor = SurfaceDarker
+                                )
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+
+                        ) {
+                            Text(
+                                modifier = Modifier.padding(start = 12.dp),
+                                text = "Discounted",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
+                            )
+                            Switch(
+                                checked = screenState.isDiscounted,
+                                onCheckedChange = viewModel::updateDiscounted,
+                                colors = SwitchDefaults.colors(
+                                    checkedTrackColor = SurfaceSecondary,
+                                    uncheckedTrackColor = SurfaceDarker,
+                                    checkedThumbColor = Surface,
+                                    uncheckedThumbColor = Surface,
+                                    checkedBorderColor = SurfaceSecondary,
+                                    uncheckedBorderColor = SurfaceDarker
+                                )
+                            )
+                        }
                     }
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    PrimaryButton(
+                        text = if (id == null) "Create" else "Update",
+                        icon = Resources.Icon.AddProduct,
+                        enabled = viewModel.isFormValid,
+                        onClick = {
+                            if (id == null) {
+                                viewModel.createNewProduct(
+                                    onSuccess = {
+                                        messageBarState.addSuccess("Product created successfully!")
+                                        navigateBack()
+                                    },
+                                    onError = { message ->
+                                        messageBarState.addError(message)
+                                    }
+                                )
+                            }
+                        }
+                    )
                 }
             }
         }

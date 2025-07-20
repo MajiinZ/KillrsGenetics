@@ -1,5 +1,6 @@
 package org.killrs.di
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -8,24 +9,29 @@ import org.koin.dsl.module
 import org.mz.admin.AdminPanelViewModel
 import org.mz.data.AdminRepositoryImpl
 import org.mz.data.CustomerRepositoryImpl
+import org.mz.data.ProductRepositoryImpl
 import org.mz.data.domain.AdminRepository
 import org.mz.data.domain.CustomerRepository
+import org.mz.data.domain.ProductRepository
 import org.mz.home.HomeGraphViewModel
 import org.mz.killrs.auth.AuthViewModel
 import org.mz.killrs.manage_product.ManageProductViewModel
+import org.mz.products_overview.ProductsOverviewViewmodel
 import org.mz.killrs.profile.ProfileViewModel
-import org.mz.killrs.manage_product.PhotoPicker
+
 
 val sharedModule = module {
     single<CustomerRepository>{CustomerRepositoryImpl()}
     single<AdminRepository>{ AdminRepositoryImpl() }
-    
+    single<ProductRepository>{ ProductRepositoryImpl() }
+
 
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeGraphViewModel)
     viewModelOf(::ProfileViewModel)
     viewModelOf(::ManageProductViewModel)
     viewModelOf(::AdminPanelViewModel)
+    viewModelOf(::ProductsOverviewViewmodel)
 }
 
 

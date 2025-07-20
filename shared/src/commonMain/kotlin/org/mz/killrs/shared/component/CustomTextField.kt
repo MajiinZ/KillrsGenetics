@@ -38,7 +38,8 @@ fun CustomTextField(
     expanded: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions(
         keyboardType = KeyboardType.Text
-    )
+    ),
+    keyboardType: KeyboardType = KeyboardType.Text
 ) {
     val borderColor by animateColorAsState(
         targetValue = if (error) BorderError else BorderIdle

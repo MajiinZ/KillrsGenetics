@@ -85,7 +85,7 @@ class AdminRepositoryImpl : AdminRepository {
                 val database = Firebase.firestore
                 database.collection(collectionPath = "product")
                     .orderBy("createdAt", Direction.DESCENDING)
-                    .limit(10)
+                    .limit(15)
                     .snapshots
                     .collectLatest { query ->
                         val products = query.documents.map { document ->

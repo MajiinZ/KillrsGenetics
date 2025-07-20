@@ -1,5 +1,6 @@
 package org.mz.home.component
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,6 +20,8 @@ import org.mz.killrs.shared.Exo2FontRegular
 import org.mz.killrs.shared.FontSize
 import org.mz.killrs.shared.TextPrimary
 import org.mz.killrs.shared.TextSecondary
+import org.mz.killrs.shared.domain.Customer
+import org.mz.killrs.shared.util.RequestState
 
 @Composable
 fun CustomDrawer(
@@ -29,13 +32,15 @@ fun CustomDrawer(
     onAdminPanelClick: () -> Unit,
     onSettingsClick: () -> Unit,
     onSignOutClick: () -> Unit,
-){
-    Column (
+    customer: RequestState<Customer>
+
+) {
+    Column(
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth(0.6f)
             .padding(horizontal = 12.dp),
-    ){
+    ) {
         Spacer(modifier = Modifier.height(50.dp))
         Text(
             modifier = Modifier.fillMaxWidth(),
@@ -55,17 +60,20 @@ fun CustomDrawer(
             fontSize = FontSize.REGULAR
         )
         Spacer(modifier = Modifier.height(50.dp))
-        DrawerItem.entries.take(6).forEach{ item ->
+        DrawerItem.entries.take(6).forEach { item ->
             DrawerItemCard(
                 drawerItem = item,
                 onClick = {
-                    when(item){
+                    when (item) {
                         DrawerItem.Profile -> onProfileClick()
                         DrawerItem.Categories -> onCategoriesClick()
                         DrawerItem.CartFilled -> onCartClick()
                         DrawerItem.Orders -> onOrdersClick()
                         DrawerItem.Settings -> onSettingsClick()
-                        DrawerItem.SignOut -> {onSignOutClick()}
+                        DrawerItem.SignOut -> {
+                            onSignOutClick()
+                        }
+
                         else -> {}
                     }
 
@@ -75,10 +83,14 @@ fun CustomDrawer(
 
         }
         Spacer(modifier = Modifier.weight(1f))
-        DrawerItemCard(
-            drawerItem = DrawerItem.AdminPanel,
-            onClick = onAdminPanelClick
-        )
+        AnimatedContent(targetState = customer) { customerState ->
+            if (customerState.isSuccess() && customerState.getSuccessData().isAdmin == true) {
+                DrawerItemCard(
+                    drawerItem = DrawerItem.AdminPanel,
+                    onClick = { onAdminPanelClick() }
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(24.dp))
 
     }

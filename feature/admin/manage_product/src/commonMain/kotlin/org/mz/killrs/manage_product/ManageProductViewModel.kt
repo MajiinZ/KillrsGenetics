@@ -54,6 +54,7 @@ class ManageProductViewModel(
                 screenState.thumbnail.isNotBlank() &&
                 screenState.price != 0.0
 
+
     init {
         if (isEditing) {
             viewModelScope.launch {
@@ -89,23 +90,7 @@ class ManageProductViewModel(
     }
 
     // === State update functions ===
-    fun updateTitle(value: String) = updateState { copy(title = value) }
-    fun updateDescription(value: String) = updateState { copy(description = value) }
-    fun updateThumbnail(value: String) = updateState { copy(thumbnail = value) }
-    fun updateCategory(value: ProductCategory) = updateState { copy(category = value) }
-    fun updateStrains(value: String) = updateState { copy(strains = value) }
-    fun updateAmountOfSeeds(value: Int?) = updateState { copy(amountOfSeeds = value) }
-    fun updatePrice(value: Double) = updateState { copy(price = value) }
-    fun updateNew(value: Boolean) = updateState { copy(isNew = value) }
-    fun updatePopular(value: Boolean) = updateState { copy(isPopular = value) }
-    fun updateDiscounted(value: Boolean) = updateState { copy(isDiscounted = value) }
-    private fun updateState(update: ManageProductState.() -> ManageProductState) {
-        screenState = screenState.update()
-    }
 
-    fun updateThumbnailUploaderState(value: RequestState<Unit>) {
-        thumbnailUploaderState = value
-    }
 
     // === Upload Thumbnail ===
     fun uploadThumbnailToStorage(file: File?, onSuccess: () -> Unit) {
@@ -125,9 +110,10 @@ class ManageProductViewModel(
                         productId = productId,
                         downloadUrl = downloadUrl,
                         onSuccess = {
-                            updateThumbnail(downloadUrl)
-                            updateThumbnailUploaderState(RequestState.Success(Unit))
                             onSuccess()
+                            updateThumbnailUploaderState(RequestState.Success(Unit))
+                            updateThumbnail(downloadUrl)
+
                         },
                         onError = { msg -> updateThumbnailUploaderState(RequestState.Error(msg)) }
                     )
@@ -154,16 +140,30 @@ class ManageProductViewModel(
     }
 
     fun updateProduct(onSuccess: () -> Unit, onError: (String) -> Unit) {
-        if (!isFormValid) {
-            onError("Please fill in all required fields.")
-            return
-        }
-        viewModelScope.launch {
-            adminRepository.updateProduct(
-                product = screenState.toProduct(),
-                onSuccess = onSuccess,
-                onError = onError
-            )
+        if (!isFormValid)
+            viewModelScope.launch {
+                adminRepository.updateProduct(
+                    product = Product(
+                        id = productId,
+                        createdAt = screenState.createdAt,
+                        title = screenState.title,
+                        description = screenState.description,
+                        thumbnail = screenState.thumbnail,
+                        category = screenState.category.name,
+                        strains = screenState.strains.split(",").map { it.trim() }
+                            .filter { it.isNotEmpty() },
+                        amountOfSeeds = screenState.amountOfSeeds,
+                        price = screenState.price,
+                        isNew = screenState.isNew,
+                        isPopular = screenState.isPopular,
+                        isDiscounted = screenState.isDiscounted
+                    ),
+                    onSuccess = onSuccess,
+                    onError = onError
+                )
+            }
+        else {
+            onError("Form is not valid.")
         }
     }
 
@@ -197,25 +197,102 @@ class ManageProductViewModel(
         }
     }
 
-    fun deleteProduct(onSuccess: () -> Unit, onError: (String) -> Unit) {
-        if (!isEditing) {
-            onError("No product to delete.")
-            return
-        }
-        viewModelScope.launch {
-            adminRepository.deleteProduct(
-                productId = productId,
-                onSuccess = {
-                    deleteThumbnailFromStorage(
-                        onSuccess = {},
-                        onError = {}
-                    )
-                    onSuccess()
-                },
-                onError = { onError(it) }
-            )
+    fun deleteProduct(
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        productId.takeIf { it.isNotEmpty() }?.let { id ->
+            viewModelScope.launch {
+                adminRepository.deleteProduct(
+                    productId = id,
+                    onSuccess = {
+                        deleteThumbnailFromStorage(
+                            onSuccess = {},
+                            onError = {}
+                        )
+                        onSuccess()
+                    },
+                    onError = { message -> onError(message) }
+                )
+            }
         }
     }
+
+    init {
+        productId.takeIf { it.isNotEmpty() }?.let { id ->
+            viewModelScope.launch {
+                val selectedProduct = adminRepository.readProductById(id)
+                if (selectedProduct.isSuccess()) {
+                    val product = selectedProduct.getSuccessData()
+                    updateId(product.id)
+                    updateCreatedAt(product.createdAt)
+                    updateTitle(product.title)
+                    updateDescription(product.description)
+                    updateThumbnail(product.thumbnail)
+                    updateCategory(ProductCategory.valueOf(product.category))
+                    updateStrains(product.strains?.joinToString(",") ?: "")
+                }
+            }
+        }
+    }
+
+    private fun updateId(value: String) {
+        screenState = screenState.copy(id = value)
+    }
+
+    fun updateCreatedAt(value: Long) {
+        screenState = screenState.copy(createdAt = value)
+
+    }
+
+    fun updateTitle(value: String) {
+        screenState = screenState.copy(title = value)
+    }
+
+    fun updateDescription(value: String) {
+        screenState = screenState.copy(description = value)
+    }
+
+    fun updateThumbnail(value: String) {
+        screenState = screenState.copy(thumbnail = value)
+    }
+
+    fun updateCategory(value: ProductCategory) {
+        screenState = screenState.copy(category = value)
+    }
+
+    fun updateStrains(value: String) {
+        screenState = screenState.copy(strains = value)
+    }
+
+    private fun updateState(update: ManageProductState.() -> ManageProductState) {
+        screenState = screenState.update()
+    }
+
+    fun updateThumbnailUploaderState(value: RequestState<Unit>) {
+        thumbnailUploaderState = value
+    }
+
+    fun updateAmountOfSeeds(value: Int?) {
+        screenState = screenState.copy(amountOfSeeds = value)
+    }
+
+    fun updatePrice(value: Double) {
+        screenState = screenState.copy(price = value)
+    }
+
+    fun updateNew(value: Boolean) {
+        screenState = screenState.copy(isNew = value)
+    }
+
+    fun updatePopular(value: Boolean) {
+        screenState = screenState.copy(isPopular = value)
+    }
+
+    fun updateDiscounted(value: Boolean) {
+        screenState = screenState.copy(isDiscounted = value)
+    }
+
 
     // === Helper to convert state to domain Product ===
     private fun ManageProductState.toProduct(): Product = Product(
