@@ -53,7 +53,7 @@ class ProductRepositoryImpl : ProductRepository {
         }
     }
 
-    override fun readNewProducts(): Flow<RequestState<List<Product>>>  = channelFlow{
+    override fun readNewProducts(): Flow<RequestState<List<Product>>> = channelFlow {
 
         try {
             val userId = getCurrentUserId()
@@ -86,6 +86,43 @@ class ProductRepositoryImpl : ProductRepository {
             }
         } catch (e: Exception) {
             send(RequestState.Error("Error while reading the last 10 items from the database: ${e.message}"))
+        }
+    }
+
+    override fun readProductByIdFlow(id: String): Flow<RequestState<Product>> = channelFlow {
+        try {
+            val userId = getCurrentUserId()
+            if (userId != null) {
+                val database = Firebase.firestore
+                database.collection(collectionPath = "product")
+                    .document(id)
+                    .snapshots
+                    .collectLatest { document ->
+                        if (document.exists) {
+                           val product = Product(
+                                id = document.id,
+                                title = document.get(field = "title"),
+                                amountOfSeeds = document.get(field = "amountOfSeeds"),
+                                description = document.get(field = "description"),
+                                thumbnail = document.get(field = "thumbnail"),
+                                category = document.get(field = "category"),
+                                strains = document.get(field = "strains"),
+                                price = document.get(field = "price"),
+                                isPopular = document.get(field = "isPopular"),
+                                isDiscounted = document.get(field = "isDiscounted"),
+                                isNew = document.get(field = "isNew"),
+                                createdAt = document.get(field = "createdAt")
+                            )
+                            send(RequestState.Success(product))
+                        } else {
+                            send(RequestState.Error("Selected product does not exsist."))
+                        }
+                    }
+            } else {
+                send(RequestState.Error("User is not available."))
+            }
+        } catch (e: Exception) {
+            send(RequestState.Error("Error while reading a selected product: ${e.message}"))
         }
     }
 }

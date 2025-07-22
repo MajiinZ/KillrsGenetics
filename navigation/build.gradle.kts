@@ -25,6 +25,8 @@ kotlin {
         val desktopMain by getting
 
 
+
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -38,7 +40,7 @@ kotlin {
             implementation(libs.compose.navigation)
 
             implementation(libs.auth.firebase.kmp)
-
+            implementation(libs.splash.screen)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
@@ -48,7 +50,7 @@ kotlin {
             implementation(project(path = ":feature:profile"))
             implementation(project(path = ":feature:admin"))
             implementation(project(path = ":feature:admin:manage_product"))
-
+            implementation(project(path = ":feature:details"))
 
         }
         commonTest.dependencies {

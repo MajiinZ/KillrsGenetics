@@ -44,6 +44,7 @@ import org.mz.home.domain.BottomBarDestination
 import org.mz.home.domain.CustomDrawerState
 import org.mz.home.domain.isOpened
 import org.mz.home.domain.opposite
+import org.mz.killrs.DetailsScreen
 import org.mz.killrs.shared.Exo2FontRegular
 import org.mz.killrs.shared.FontSize
 import org.mz.killrs.shared.IconPrimary
@@ -62,7 +63,8 @@ import rememberMessageBarState
 fun HomeGraphScreen(
     navigateToAuth: () -> Unit,
     navigateToProfile: () -> Unit,
-    navigateToAdmin: () -> Unit
+    navigateToAdmin: () -> Unit,
+    navigateToDetails: (String) -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
@@ -187,7 +189,7 @@ fun HomeGraphScreen(
                     messageBarState = messageBarState,
                     errorMaxLines = 3,
                     contentBackgroundColor = Surface
-                ){
+                ) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -202,10 +204,19 @@ fun HomeGraphScreen(
                             startDestination = Screen.ProductsOverview
                         ) {
                             composable<Screen.ProductsOverview> {
-                                ProductsOverviewScreen()
+                                ProductsOverviewScreen(
+                                    navigateToDetails = navigateToDetails
+                                )
                             }
 
 
+                            composable<Screen.Details>{
+                                DetailsScreen(
+                                    navigateBack = {
+                                        navController.navigateUp()
+                                    }
+                                )
+                            }
 
                             composable<Screen.ShoppingCart> { }
                             composable<Screen.Profile> { }

@@ -31,9 +31,7 @@ fun ProductCard(
     modifier: Modifier = Modifier,
     product: Product,
     onClick: (String) -> Unit,
-    onAddToCart: (String) -> Unit,
-    onRemoveFromCart: (String) -> Unit,
-    onEdit: (String) -> Unit
+
 ) {
     Row(
         modifier = modifier

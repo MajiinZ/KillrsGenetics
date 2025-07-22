@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import org.mz.admin.AdminPanelScreen
 import org.mz.home.HomeGraphScreen
+import org.mz.killrs.DetailsScreen
 import org.mz.killrs.auth.AuthenticationScreen
 import org.mz.killrs.manage_product.ManageProductScreen
 import org.mz.killrs.profile.ProfileScreen
@@ -41,6 +42,9 @@ fun SetupNavGraph(
                 },
                 navigateToAdmin = {
                     navController.navigate(Screen.Admin)
+                },
+                navigateToDetails = { productId ->
+                    navController.navigate(Screen.Details(id = productId))
                 }
             )
         }
@@ -69,8 +73,14 @@ fun SetupNavGraph(
                 navigateToEdit = {
                     navController.navigate(Screen.ManageProduct)
                 }
-
             )
+        }
+        composable<Screen.Details> {
+            DetailsScreen(
+                navigateBack = {
+                    navController.navigateUp()
+                })
+
         }
     }
 }

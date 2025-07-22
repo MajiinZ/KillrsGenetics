@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.ide.kmp.KotlinAndroidSourceSetMarker.Companion.android
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -8,6 +9,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.google.services)
+
 }
 
 kotlin {
@@ -43,6 +45,10 @@ kotlin {
                 implementation(libs.androidx.lifecycle.viewmodel)
                 implementation(libs.androidx.lifecycle.runtime.compose)
 
+               // implementation(libs.splash.screen)
+
+
+
                 implementation(libs.auth.kmp)
                 implementation(libs.firebase.app)
 
@@ -73,6 +79,11 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
+                // implementation(libs.kotlinx.coroutinesSwing)
+            }
+        }
+        val desktopTest by getting {
+            dependencies {
                 // implementation(libs.kotlinx.coroutinesSwing)
             }
         }

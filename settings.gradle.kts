@@ -12,6 +12,7 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        google()
     }
 }
 
@@ -25,6 +26,7 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        google()
     }
 }
 
@@ -35,6 +37,7 @@ include(":data")
 include(":di")
 include(":feature:admin")
 include(":feature:admin:manage_product")
+include(":feature:details")
 include(":feature:home")
 include(":feature:home:products_overview")
 include(":feature:profile")

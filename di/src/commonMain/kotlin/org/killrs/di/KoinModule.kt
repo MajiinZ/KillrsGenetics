@@ -18,6 +18,7 @@ import org.mz.killrs.auth.AuthViewModel
 import org.mz.killrs.manage_product.ManageProductViewModel
 import org.mz.products_overview.ProductsOverviewViewmodel
 import org.mz.killrs.profile.ProfileViewModel
+import org.mz.killrs.DetailsViewModel
 
 
 val sharedModule = module {
@@ -32,6 +33,7 @@ val sharedModule = module {
     viewModelOf(::ManageProductViewModel)
     viewModelOf(::AdminPanelViewModel)
     viewModelOf(::ProductsOverviewViewmodel)
+    viewModelOf(::DetailsViewModel)
 }
 
 

@@ -1,0 +1,11 @@
+* [33m5a8c643[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m Add thumbnail implementation works
+* [33ma1bbc00[m Added Thumbnail implementation
+* [33mb396b74[m Added add product functionality going to implement adding a thumbnail next
+* [33mf2b3ce7[m added a lot of files and classes...just look through them
+* [33m8563a72[m Implementing profilescreen and custom buttons
+* [33m77dfaf4[m Added signout functionality as well as beginning of profile screen and its components
+* [33m3e73bc4[m Update README.md
+* [33m843033b[m Added in side navigation menu, bottom nav bar and nested navigation
+* [33m5642682[m authentication viewModel
+* [33m140a11a[m google sign in implementation
+* [33m7fa2b99[m Incorporating google log in w/ firebase next

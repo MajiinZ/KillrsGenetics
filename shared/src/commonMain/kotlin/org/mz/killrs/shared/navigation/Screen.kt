@@ -32,4 +32,9 @@ sealed class Screen {
         val id: String? = null
     ) : Screen()
 
+    @Serializable
+    data class Details(
+        val id: String
+    ) : Screen()
+
 }

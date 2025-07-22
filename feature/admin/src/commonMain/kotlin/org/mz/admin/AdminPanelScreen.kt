@@ -182,9 +182,7 @@ fun AdminPanelScreen(
                                 ProductCard(
                                     product = product,
                                     onClick = { navigateToManageProduct(product.id) },
-                                    onRemoveFromCart = {},
-                                    onAddToCart = {},
-                                    onEdit = { navigateToManageProduct(product.id) }
+                                    
                                 )
                             }
                         }
