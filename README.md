@@ -1,79 +1,143 @@
 🌱 KillrsGenetics — Kotlin Multiplatform E-Commerce App
-This is a Kotlin Multiplatform (KMP) project designed for KillrsGenetics, a secure and modern e-commerce solution tailored for selling premium genetics (specialized seeds and merchandise). Built using Kotlin's cross-platform capabilities, this project targets:
 
-✅ Android (via Jetpack Compose)
+KillrsGenetics is a secure, modern e-commerce platform built using Kotlin Multiplatform (KMP). Designed for the sale of premium genetics—including specialized seeds and branded merchandise—this cross-platform project emphasizes performance, privacy, and a seamless shopping experience.
+
+Built with Kotlin's robust cross-platform capabilities, KillrsGenetics targets:
+
+✅ Android (Jetpack Compose)
 
 ✅ Desktop (Compose Multiplatform)
 
-✅ Server (Ktor Backend with Firebase integration)
+✅ Web (WASM, in progress)
+
+✅ Server (Ktor backend with Firebase integration)
+
+
+
+---
 
 📦 Project Structure
+
 composeApp/
-Contains shared UI and business logic for Android and Desktop clients using JetBrains Compose Multiplatform.
 
-commonMain/ – Shared Kotlin code across all targets.
+UI and business logic for Android and Desktop.
 
-Platform-specific folders (androidMain/, desktopMain/, etc.) for target-dependent implementations.
+Built with JetBrains Compose Multiplatform.
+
+Uses shared view models and design components.
+
 
 shared/
-The primary shared module between all platforms. You can place core domain models, network logic, and utilities here.
 
-Most development occurs in commonMain/.
+Core logic, models, networking, and utilities.
 
-Extend with androidMain/, iosMain/, or other folders for target-specific code when needed.
+Most development takes place in commonMain/.
+
+Platform-specific extensions (e.g., androidMain/, desktopMain/) override shared behavior when necessary.
+
 
 server/
-This module houses the Ktor backend, which manages authentication, email orders, and integrates with Firebase.
 
-🔒 This folder contains sensitive backend logic and will not be made public.
+Ktor-based backend with integration for:
+
+Firebase Authentication
+
+Secure order handling
+
+Email-based order notifications
+
+
+
+> 🔒 Note: This folder contains sensitive backend logic and is not publicly available.
+
+
+
+
+---
 
 🔐 Key Features
-Secure User Auth – Supports sign-in with Google using Firebase Authentication.
 
-Real-Time Inventory – Admins can update product stock directly via the Firebase Console.
+Secure Firebase Authentication
+Supports Google Sign-In for streamlined user access.
 
-Custom Order Emails – On purchase, admins receive detailed emails with order content and preferred shipping.
+Real-Time Inventory Management
+Admins can adjust product stock via Firebase Console.
 
-Shared UI & Logic – Built for efficiency with a shared Kotlin codebase across Android and Desktop clients.
+Automated Order Notifications
+Purchases trigger custom order emails to admin with detailed order data.
 
-Modular Architecture – Inspired by multi-module clean architecture principles.
+Shared Codebase
+UI and logic are shared across Android and Desktop for consistency and maintainability.
 
-🚀 Goals & Vision
-KillrsGenetics aims to provide a trustworthy and discreet shopping experience for customers interested in premium genetics. This application prioritizes security, reliability, and cross-platform reach, making it accessible on both mobile and desktop platforms with a consistent experience.
+Modular Architecture
+Project structure follows clean architecture principles, separating concerns across modules like feature/, data/, navigation/, and di/.
+
+
+
+---
+
+🚀 Vision
+
+KillrsGenetics is committed to delivering a trusted, discreet, and cross-platform shopping experience tailored for customers in the premium genetics market. The app is built with security-first practices and optimized for reliability on both mobile and desktop environments.
+
+
+---
 
 🛠️ Tech Stack
-Kotlin Multiplatform
+
+Kotlin Multiplatform (KMP)
 
 JetBrains Compose Multiplatform
 
-Ktor for backend APIs
+Ktor (Backend APIs)
 
-Firebase for authentication and data handling
+Firebase (Authentication, Realtime DB, Storage)
 
 Google Sign-In
 
-Modular Architecture following clean coding practices
+Modular, multi-layer architecture (inspired by clean architecture practices)
+
+
+
+---
 
 📚 Based On
-While the app draws architectural guidance from Stefan Jovanovic’s Kotlin Multiplatform eCommerce course, it has been customized extensively to meet the unique branding, security, and operational needs of KillrsGenetics.
 
-Check out the Kotlin Multiplatform Docs
+This project is influenced by Stefan Jovanovic’s Kotlin Multiplatform eCommerce course, but has been significantly customized to support the unique branding, operational needs, and privacy considerations of KillrsGenetics.
+
+
+---
 
 🧪 In Progress
-This project is still under active development. The following features are planned:
 
-🔄 Payment gateway integration (Stripe, Coinbase Commerce)
+Development is active. Planned upcoming features include:
 
-📦 Order tracking system
+🔄 Payment Gateway Integration (Stripe, Coinbase Commerce)
 
-📱 iOS version using Swift + Kotlin Multiplatform
+📦 Order Tracking System
 
-🧠 Advanced filtering and search experience
+📱 iOS Support using Swift + Kotlin Multiplatform
 
-🧾 Admin analytics dashboard
+🧠 Advanced Filtering & Search
+
+📊 Admin Analytics Dashboard
+
+🧾 Printable Invoices & Receipts
+
+
+
+---
 
 🙌 Contributions
-This is a private-use, branded project and not accepting public contributions at this time. However, feel free to fork or explore for learning purposes.
+
+This is a private, branded project and not accepting outside contributions at this time.
+However, you are welcome to explore or fork the project for educational purposes only.
+
+
+---
 
 📄 License
-Private Use Only — All rights reserved to KillrsGenetics. Not for commercial redistribution or unauthorized resale.
+
+Private Use Only
+All rights reserved to KillrsGenetics.
+Commercial redistribution or unauthorized resale is strictly prohibited.
