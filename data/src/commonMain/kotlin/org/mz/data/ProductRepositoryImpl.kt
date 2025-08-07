@@ -1,7 +1,7 @@
 package org.mz.data
 
 import dev.gitlive.firebase.Firebase
-import dev.gitlive.firebase.firestore.Direction
+import dev.gitlive.firebase.auth.auth
 import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.collectLatest
 import org.mz.data.domain.ProductRepository
 import org.mz.killrs.shared.domain.Product
 import org.mz.killrs.shared.util.RequestState
-import dev.gitlive.firebase.auth.auth
 
 class ProductRepositoryImpl : ProductRepository {
 
@@ -113,7 +112,7 @@ class ProductRepositoryImpl : ProductRepository {
                                 isNew = document.get(field = "isNew"),
                                 createdAt = document.get(field = "createdAt")
                             )
-                            send(RequestState.Success(product))
+                            send(RequestState.Success(product.copy(title = product.title.uppercase())))
                         } else {
                             send(RequestState.Error("Selected product does not exsist."))
                         }

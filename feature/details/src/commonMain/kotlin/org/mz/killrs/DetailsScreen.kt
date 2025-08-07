@@ -25,24 +25,24 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.mz.killrs.components.NumberOfSeedsSelector
 import org.mz.killrs.shared.*
 import org.mz.killrs.shared.component.InfoCard
 import org.mz.killrs.shared.component.LoadingCard
-import org.mz.killrs.shared.component.QuantityCounter
+import org.mz.killrs.shared.component.PrimaryButton
 import org.mz.killrs.shared.domain.ProductCategory
-import org.mz.killrs.shared.domain.QuantityCounterSize
 import org.mz.killrs.shared.util.DisplayResult
 import rememberMessageBarState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
-    navigateBack: () -> Unit) {
+    navigateBack: () -> Unit
+) {
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<DetailsViewModel>()
     val product by viewModel.product.collectAsState()
-    //val quantity = viewModel.quantity
-    //val selectedFlavor = viewModel.selectedFlavor
+    val selectedAmount by viewModel.selectedAmount.collectAsState()
 
     Scaffold(
         containerColor = Surface,
@@ -59,33 +59,41 @@ fun DetailsScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            painter = painterResource(Resources.Icon.Close),
+                            painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = "Back Arrow icon",
                             tint = IconPrimary
                         )
                     }
                 },
                 actions = {
-                    ///QuantityCounter(
-                    //                        size = QuantityCounterSize.Large,
-                    //                        value = quantity,
-                    //                        onMinusClick = viewModel::updateQuantity,
-                    //                        onPlusClick = viewModel::updateQuantity
-                    //                    )
-                    Spacer(modifier = Modifier.width(16.dp))
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            painter = painterResource(Resources.Icon.InfoFilled),
+                            contentDescription = "Share icon",
+                            tint = IconPrimary
+                        )
+                    }
+                }
+            )
+        },
+        bottomBar = {
+            PrimaryButton(
+                icon = Resources.Icon.ShoppingCart,
+                onClick = {
+                    // TODO: Add to cart logic using selectedAmount
+                    navigateBack()
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Surface,
-                    scrolledContainerColor = Surface,
-                    navigationIconContentColor = IconPrimary,
-                    titleContentColor = TextPrimary,
-                    actionIconContentColor = IconPrimary
-                )
+                text = "Add to Cart ($selectedAmount seeds)",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 54.dp)
             )
         }
     ) { padding ->
         product.DisplayResult(
-            onLoading = { LoadingCard(modifier = Modifier.fillMaxSize()) },
+            onLoading = {
+                LoadingCard(modifier = Modifier.fillMaxSize())
+            },
             onSuccess = { selectedProduct ->
                 ContentWithMessageBar(
                     contentBackgroundColor = Surface,
@@ -101,96 +109,77 @@ fun DetailsScreen(
                     successContainerColor = SurfaceBrand,
                     successContentColor = TextPrimary
                 ) {
-                    Column {
-                        Column(
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                            .padding(horizontal = 24.dp)
+                            .padding(top = 12.dp, bottom = 24.dp)
+                    ) {
+                        AsyncImage(
                             modifier = Modifier
-                                .weight(1f)
-                                .verticalScroll(rememberScrollState())
-                                .padding(horizontal = 24.dp)
-                                .padding(top = 12.dp)
-                        ) {
-                            AsyncImage(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(300.dp)
-                                    .clip(RoundedCornerShape(size = 12.dp))
-                                    .border(
-                                        width = 1.dp,
-                                        color = BorderIdle,
-                                        shape = RoundedCornerShape(size = 12.dp)
-                                    ),
-                                model = ImageRequest.Builder(LocalPlatformContext.current)
-                                    .data(selectedProduct.thumbnail)
-                                    .crossfade(enable = true)
-                                    .build(),
-                                contentDescription = "Product thumbnail image",
-                                contentScale = ContentScale.Crop
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                if (ProductCategory.valueOf(selectedProduct.category) != ProductCategory.Sativa) {
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Icon(
-                                            modifier = Modifier.size(14.dp),
-                                            painter = painterResource(Resources.Icon.Seed),
-                                            contentDescription = "Weight icon"
-                                        )
-                                        Spacer(modifier = Modifier.width(4.dp))
-                                        Text(
-                                            text = "${selectedProduct.amountOfSeeds}g",
-                                            fontSize = FontSize.REGULAR,
-                                            color = TextPrimary
-                                        )
-                                    }
-                                } else {
-                                    Spacer(modifier = Modifier.weight(1f))
-                                }
-                                Text(
-                                    text = "${'$'}${selectedProduct.price}",
-                                    fontSize = FontSize.MEDIUM,
-                                    color = TextSecondary,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(
-                                text = selectedProduct.title,
-                                fontSize = FontSize.EXTRA_MEDIUM,
-                                fontWeight = FontWeight.Medium,
-                                fontFamily = Exo2FontRegular(),
-                                color = TextPrimary,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Spacer(modifier = Modifier.height(12.dp))
-                            Text(
-                                text = selectedProduct.description,
-                                fontSize = FontSize.REGULAR,
-                                color = TextPrimary
-                            )
-                        }
-                        Column(
-                            modifier = Modifier
-                                .background(
-                                    if (!selectedProduct.strains.isNullOrEmpty()) SurfaceLighter else Surface
-                                )
-                                .padding(all = 24.dp)
-                        ) {
+                                .fillMaxWidth()
+                                .height(300.dp)
+                                .clip(RoundedCornerShape(12.dp))
+                                .border(1.dp, BorderIdle, RoundedCornerShape(12.dp)),
+                            model = ImageRequest.Builder(LocalPlatformContext.current)
+                                .data(selectedProduct.thumbnail)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = "Product thumbnail",
+                            contentScale = ContentScale.Crop
+                        )
 
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "$${selectedProduct.price}",
+                                fontSize = FontSize.MEDIUM,
+                                color = TextSecondary,
+                                fontWeight = FontWeight.Medium
+                            )
                         }
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Text(
+                            text = selectedProduct.title,
+                            fontSize = FontSize.EXTRA_MEDIUM,
+                            fontWeight = FontWeight.Medium,
+                            fontFamily = Exo2FontRegular(),
+                            color = TextPrimary,
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        Text(
+                            text = selectedProduct.description,
+                            fontSize = FontSize.REGULAR,
+                            color = TextPrimary,
+                            fontWeight = FontWeight.Medium,
+                            fontFamily = Exo2FontRegular()
+                        )
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        // NEW: Seed Amount Selector
+                        NumberOfSeedsSelector(
+                            selectedAmount = selectedAmount,
+                            onAmountSelected = { viewModel.setSelectedAmount(it) }
+                        )
                     }
                 }
             },
             onError = { message ->
                 InfoCard(
                     image = Resources.Image.KillrsLogo,
-                    title = "Opps!",
+                    title = "Oops!",
                     subtitle = message
                 )
             }

@@ -1,3 +1,4 @@
+// ProductRepository.kt
 package org.mz.data.domain
 
 import kotlinx.coroutines.flow.Flow
@@ -9,5 +10,4 @@ interface ProductRepository {
     fun readNewAndDiscountedProducts(): Flow<RequestState<List<Product>>>
     fun readNewProducts(): Flow<RequestState<List<Product>>>
     fun readProductByIdFlow(id: String): Flow<RequestState<Product>>
-
 }
