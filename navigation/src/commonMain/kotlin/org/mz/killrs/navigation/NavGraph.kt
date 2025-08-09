@@ -79,8 +79,11 @@ fun SetupNavGraph(
             DetailsScreen(
                 navigateBack = {
                     navController.navigateUp()
-                })
-
+                },
+                navigateToCart = {
+                    navController.navigate(Screen.ShoppingCart)
+                },
+            )
         }
     }
 }

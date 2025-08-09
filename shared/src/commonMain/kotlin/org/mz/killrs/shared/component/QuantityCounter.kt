@@ -63,7 +63,7 @@ fun QuantityCounter(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "+$value",
+                text = value.toString(),
                 fontSize = FontSize.SMALL,
                 lineHeight = FontSize.SMALL * 1,
                 fontWeight = FontWeight.Medium,
@@ -80,7 +80,7 @@ fun QuantityCounter(
         ) {
             Icon(
                 modifier = Modifier.size(14.dp),
-                painter = painterResource(Resources.Icon.Info),
+                painter = painterResource(Resources.Icon.Minus),
                 contentDescription = "Plus icon",
                 tint = IconPrimary
             )

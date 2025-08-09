@@ -6,6 +6,7 @@ import dev.gitlive.firebase.firestore.firestore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flow
 import org.mz.data.domain.ProductRepository
 import org.mz.killrs.shared.domain.Product
 import org.mz.killrs.shared.util.RequestState
@@ -123,6 +124,24 @@ class ProductRepositoryImpl : ProductRepository {
         } catch (e: Exception) {
             send(RequestState.Error("Error while reading a selected product: ${e.message}"))
         }
+    }
+
+    override fun getProduct(productId: String): Flow<RequestState<Product>> = flow {
+        emit(RequestState.Loading)
+        // You could simulate a product retrieval here
+        val fakeProduct = Product(
+            id = productId,
+            title = "Sample Product",
+            description = "This is a placeholder product.",
+            price = 0.0,
+            thumbnail = "",
+            category = "",
+            isPopular = false,
+            isNew = false,
+            isDiscounted = false,
+            createdAt = 0L
+        )
+        emit(RequestState.Success(fakeProduct))
     }
 }
 

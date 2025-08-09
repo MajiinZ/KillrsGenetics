@@ -81,7 +81,7 @@ class ManageProductViewModel(
             } ?: run {
                 ""
             },
-            amountOfSeeds = product.amountOfSeeds,
+            amountOfSeeds = product.amountOfSeeds?.toInt(),
             price = product.price,
             isNew = product.isNew,
             isPopular = product.isPopular,
@@ -152,7 +152,7 @@ class ManageProductViewModel(
                         category = screenState.category.name,
                         strains = screenState.strains.split(",").map { it.trim() }
                             .filter { it.isNotEmpty() },
-                        amountOfSeeds = screenState.amountOfSeeds,
+                        amountOfSeeds = screenState.amountOfSeeds.toString(),
                         price = screenState.price,
                         isNew = screenState.isNew,
                         isPopular = screenState.isPopular,
@@ -303,7 +303,7 @@ class ManageProductViewModel(
         thumbnail = thumbnail,
         category = category.name,
         strains = strains.split(",").map { it.trim() }.filter { it.isNotEmpty() },
-        amountOfSeeds = amountOfSeeds,
+        amountOfSeeds = amountOfSeeds.toString(),
         price = price,
         isNew = isNew,
         isPopular = isPopular,

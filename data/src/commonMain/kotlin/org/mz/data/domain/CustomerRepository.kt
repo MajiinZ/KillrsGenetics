@@ -2,6 +2,7 @@ package org.mz.data.domain
 
 import dev.gitlive.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
+import org.mz.killrs.shared.domain.CartItem
 import org.mz.killrs.shared.domain.Customer
 import org.mz.killrs.shared.util.RequestState
 
@@ -18,11 +19,11 @@ interface CustomerRepository {
         onSuccess: () -> Unit,
         onError: (String) -> Unit
     )
-    //suspend fun addItemToCard(
-    //        cartItem: CartItem,
-    //        onSuccess: () -> Unit,
-    //        onError: (String) -> Unit
-    //    )
+    suspend fun addItemToCart(
+        cartItem: CartItem,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+        )
     suspend fun updateCartItemQuantity(
         id: String,
         quantity: Int,

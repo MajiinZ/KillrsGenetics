@@ -1,3 +1,4 @@
+
 package org.mz.killrs.components
 
 import androidx.compose.foundation.background
@@ -8,65 +9,131 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import org.mz.killrs.shared.BorderIdle
-import org.mz.killrs.shared.BorderSecondary
-import org.mz.killrs.shared.FontSize
-import org.mz.killrs.shared.Surface
-import org.mz.killrs.shared.SurfaceLighter
-import org.mz.killrs.shared.TextPrimary
-import org.mz.killrs.shared.TextSecondary
+import org.mz.killrs.shared.*
 
 @Composable
-fun NumberOfSeedsChip(
-    amountOfSeeds: Int,
-    isSelected: Boolean = false,
-    onClick: () -> Unit
+fun SeedsChipsWithCustomDialog(
+    seedsList: List<Int>,
+    selectedAmount: Int?,
+    onAmountSelected: (Int?) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(size = 12.dp))
-            .clickable { onClick() }
-            .background(Surface)
-            .border(
-                width = 1.dp,
-                color = if (isSelected) BorderSecondary else BorderIdle,
-                shape = RoundedCornerShape(size = 12.dp)
+    var showCustomDialog by remember { mutableStateOf(false) }
+    var customInput by remember { mutableStateOf("") }
+
+    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        seedsList.forEach { seeds ->
+            NumberOfSeedsChip(
+                amountOfSeeds = seeds,
+                isSelected = selectedAmount == seeds,
+                onClick = { onAmountSelected(seeds) }
             )
-            .padding(all = 16.dp),
-        contentAlignment = Alignment.Center
+        }
+
+        // Reset chip
+        NumberOfSeedsChip(
+            amountOfSeeds = null,
+            isSelected = selectedAmount == null,
+            onClick = { onAmountSelected(null) }
+        )
+
+        // Custom chip
+        NumberOfSeedsChip(
+            amountOfSeeds = -1,  // Use -1 or another sentinel for custom
+            isSelected = selectedAmount != null && selectedAmount !in seedsList,
+            onClick = { showCustomDialog = true }
+        )
+    }
+
+    @Composable
+    fun NumberOfSeedsChip(
+        amountOfSeeds: Int?,
+        isSelected: Boolean = false,
+        onClick: () -> Unit
     ) {
-        Text(
-            text = "$amountOfSeeds seeds",
-            fontSize = FontSize.SMALL,
-            color = if (isSelected) TextSecondary else TextPrimary,
-            fontWeight = FontWeight.Medium
+        val displayText = when (amountOfSeeds) {
+            null -> "Reset"
+            -1 -> "Custom"
+            else -> "$amountOfSeeds seeds"
+        }
+
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(12.dp))
+                .clickable { onClick() }
+                .background(Surface)
+                .border(
+                    width = 1.dp,
+                    color = if (isSelected) BorderSecondary else BorderIdle,
+                    shape = RoundedCornerShape(12.dp)
+                )
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = displayText,
+                fontSize = FontSize.SMALL,
+                color = if (isSelected) TextSecondary else TextPrimary,
+                fontWeight = FontWeight.Medium
+            )
+        }
+    }
+
+
+    if (showCustomDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showCustomDialog = false
+                customInput = ""
+            },
+            title = { Text("Enter custom seed amount") },
+            text = {
+                OutlinedTextField(
+                    value = customInput,
+                    onValueChange = { input ->
+                        if (input.all { it.isDigit() }) {
+                            customInput = input
+                        }
+                    },
+                    label = { Text("Seeds") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = androidx.compose.ui.text.input.KeyboardType.Number
+                    )
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        val enteredValue = customInput.toIntOrNull()
+                        if (enteredValue != null && enteredValue > 0) {
+                            onAmountSelected(enteredValue)
+                        }
+                        showCustomDialog = false
+                        customInput = ""
+                    }
+                ) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showCustomDialog = false
+                        customInput = ""
+                    }
+                ) {
+                    Text("Cancel")
+                }
+            }
         )
     }
 }
 
-@Composable
-fun NumberOfSeedsSelector(
-    selectedAmount: Int,
-    onAmountSelected: (Int) -> Unit
-) {
-    val seedOptions = listOf(3, 5, 10)
-
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        seedOptions.forEach { amount ->
-            NumberOfSeedsChip(
-                amountOfSeeds = amount,
-                isSelected = amount == selectedAmount,
-                onClick = { onAmountSelected(amount) }
-            )
-        }
-    }
-}

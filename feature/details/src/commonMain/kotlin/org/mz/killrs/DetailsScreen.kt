@@ -1,8 +1,7 @@
+// DetailsScreen.kt
 package org.mz.killrs
 
-
 import ContentWithMessageBar
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -12,7 +11,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -25,24 +23,27 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.mz.killrs.components.NumberOfSeedsSelector
+import org.mz.killrs.components.NumberOfSeedsChip
 import org.mz.killrs.shared.*
 import org.mz.killrs.shared.component.InfoCard
 import org.mz.killrs.shared.component.LoadingCard
 import org.mz.killrs.shared.component.PrimaryButton
-import org.mz.killrs.shared.domain.ProductCategory
+import org.mz.killrs.shared.component.QuantityCounter
+import org.mz.killrs.shared.domain.QuantityCounterSize
 import org.mz.killrs.shared.util.DisplayResult
 import rememberMessageBarState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    navigateToCart: () -> Unit
 ) {
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<DetailsViewModel>()
     val product by viewModel.product.collectAsState()
-    val selectedAmount by viewModel.selectedAmount.collectAsState()
+    val selectedAmount = viewModel.selectedAmountOfSeeds // String? in your VM
+    val quantity = viewModel.quantity
 
     Scaffold(
         containerColor = Surface,
@@ -66,34 +67,23 @@ fun DetailsScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
-                        Icon(
-                            painter = painterResource(Resources.Icon.InfoFilled),
-                            contentDescription = "Share icon",
-                            tint = IconPrimary
-                        )
-                    }
-                }
-            )
-        },
-        bottomBar = {
-            PrimaryButton(
-                icon = Resources.Icon.ShoppingCart,
-                onClick = {
-                    // TODO: Add to cart logic using selectedAmount
-                    navigateBack()
+                    QuantityCounter(
+                        size = QuantityCounterSize.Large,
+                        value = quantity,
+                        onMinusClick = { viewModel.updateQuantity(it) },
+                        onPlusClick = { viewModel.updateQuantity(it) }
+                    )
                 },
-                text = "Add to Cart ($selectedAmount seeds)",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 14.dp, vertical = 54.dp)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Surface,
+                    titleContentColor = TextPrimary,
+                    actionIconContentColor = IconPrimary
+                )
             )
         }
     ) { padding ->
         product.DisplayResult(
-            onLoading = {
-                LoadingCard(modifier = Modifier.fillMaxSize())
-            },
+            onLoading = { LoadingCard(modifier = Modifier.fillMaxSize()) },
             onSuccess = { selectedProduct ->
                 ContentWithMessageBar(
                     contentBackgroundColor = Surface,
@@ -102,19 +92,15 @@ fun DetailsScreen(
                             top = padding.calculateTopPadding(),
                             bottom = padding.calculateBottomPadding()
                         ),
-                    messageBarState = messageBarState,
-                    errorMaxLines = 2,
-                    errorContainerColor = SurfaceError,
-                    errorContentColor = TextWhite,
-                    successContainerColor = SurfaceBrand,
-                    successContentColor = TextPrimary
+                    messageBarState = messageBarState
                 ) {
                     Column(
                         modifier = Modifier
                             .verticalScroll(rememberScrollState())
                             .padding(horizontal = 24.dp)
-                            .padding(top = 12.dp, bottom = 24.dp)
+                            .padding(top = 12.dp)
                     ) {
+                        // Product Image
                         AsyncImage(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -125,53 +111,88 @@ fun DetailsScreen(
                                 .data(selectedProduct.thumbnail)
                                 .crossfade(true)
                                 .build(),
-                            contentDescription = "Product thumbnail",
+                            contentDescription = null,
                             contentScale = ContentScale.Crop
                         )
 
                         Spacer(modifier = Modifier.height(12.dp))
 
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "$${selectedProduct.price}",
-                                fontSize = FontSize.MEDIUM,
-                                color = TextSecondary,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
+                        // Price
+                        Text(
+                            text = "$${selectedProduct.price}",
+                            fontSize = FontSize.MEDIUM,
+                            color = TextSecondary,
+                            fontWeight = FontWeight.Medium
+                        )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
+                        // Title
                         Text(
                             text = selectedProduct.title,
                             fontSize = FontSize.EXTRA_MEDIUM,
                             fontWeight = FontWeight.Medium,
                             fontFamily = Exo2FontRegular(),
-                            color = TextPrimary,
-                            maxLines = 2,
-                            overflow = TextOverflow.Ellipsis
+                            color = TextPrimary
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
+                        // Description
                         Text(
                             text = selectedProduct.description,
                             fontSize = FontSize.REGULAR,
                             color = TextPrimary,
-                            fontWeight = FontWeight.Medium,
-                            fontFamily = Exo2FontRegular()
+                            fontWeight = FontWeight.Normal,
+                            lineHeight = FontSize.REGULAR * 1.3
                         )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Seeds Selection (fixed 4 seed chips + reset chip below)
+                        val fixedSeedOptions = listOf(0, 3, 5, 10)
+
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            fixedSeedOptions.forEach { seeds ->
+                                NumberOfSeedsChip(
+                                    amountOfSeeds = seeds,
+                                    isSelected = selectedAmount == seeds,
+                                    onClick = {
+                                        viewModel.updateSelectedAmountOfSeeds(seeds)
+                                    }
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            NumberOfSeedsChip(
+                                amountOfSeeds = null, // Reset chip
+                                isSelected = selectedAmount == null,
+                                onClick = { viewModel.updateSelectedAmountOfSeeds(null) }
+                            )
+                        }
 
                         Spacer(modifier = Modifier.height(24.dp))
 
-                        // NEW: Seed Amount Selector
-                        NumberOfSeedsSelector(
-                            selectedAmount = selectedAmount,
-                            onAmountSelected = { viewModel.setSelectedAmount(it) }
+                        // Add to Cart Button
+                        PrimaryButton(
+                            icon = Resources.Icon.ShoppingCart,
+                            text = "Add to Cart",
+                            enabled = selectedAmount != null,
+                            onClick = {
+                                viewModel.addItemToCart(
+                                    onSuccess = { messageBarState.addSuccess("Product added to cart.") },
+                                    onError = { message -> messageBarState.addError(message) }
+                                )
+                            }
                         )
                     }
                 }

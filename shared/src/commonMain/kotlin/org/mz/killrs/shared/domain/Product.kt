@@ -15,7 +15,7 @@ data class Product(
     val thumbnail: String,
     val category: String,
     val strains: List<String>? = null,
-    val amountOfSeeds: Int? = null,
+    val amountOfSeeds: String? = null,
     val isPopular: Boolean,
     val isNew: Boolean,
     val isDiscounted: Boolean = true

@@ -214,7 +214,10 @@ fun HomeGraphScreen(
                                 DetailsScreen(
                                     navigateBack = {
                                         navController.navigateUp()
-                                    }
+                                    },
+                                    navigateToCart = {
+                                        navController.navigate(Screen.ShoppingCart)
+                                    },
                                 )
                             }
 

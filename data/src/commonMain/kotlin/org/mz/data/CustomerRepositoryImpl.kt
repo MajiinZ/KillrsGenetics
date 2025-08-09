@@ -141,10 +141,10 @@ class CustomerRepositoryImpl : CustomerRepository {
         }
     }
 
-    suspend fun addItemToCard(
+    override suspend fun addItemToCart(
         cartItem: CartItem,
         onSuccess: () -> Unit,
-        onError: (String) -> Unit,
+        onError: (String) -> Unit
     ) {
         try {
             val currentUserId = getCurrentUserId()
@@ -157,22 +157,22 @@ class CustomerRepositoryImpl : CustomerRepository {
                     .get()
                 if (existingCustomer.exists) {
                     val existingCart = existingCustomer.get<List<CartItem>>("cart")
-                    val updatedCart = existingCart + cartItem
+                    val updatedCart = existingCart.toMutableList()
                     customerCollection.document(currentUserId)
                         .set(
-                            data = mapOf("cart" to updatedCart),
+                           data = mapOf("cart" to updatedCart),
                             merge = true
                         )
                     onSuccess()
-                } else {
-                    onError("Select customer does not exist.")
                 }
-            } else {
-                onError("User is not available.")
+
+
             }
         } catch (e: Exception) {
             onError("Error while adding a product to cart: ${e.message}")
         }
+
+
     }
 
     override suspend fun updateCartItemQuantity(

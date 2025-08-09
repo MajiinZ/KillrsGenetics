@@ -9,10 +9,6 @@ import kotlin.uuid.Uuid
 data class CartItem(
     val id: String = Uuid.random().toHexString(),
     val productId: String,
-    val name: String,
-    val description: String,
-    val imageUrl: String,
-    val quantity: Int,
-    val price: Double,
-    val strain: String? = null,
+    val amountOfSeeds: Int? = null,
+    val quantity: Int
 )
