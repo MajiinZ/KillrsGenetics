@@ -13,12 +13,14 @@ import org.mz.data.ProductRepositoryImpl
 import org.mz.data.domain.AdminRepository
 import org.mz.data.domain.CustomerRepository
 import org.mz.data.domain.ProductRepository
+import org.mz.data.domain.CartRepository
 import org.mz.home.HomeGraphViewModel
 import org.mz.killrs.auth.AuthViewModel
 import org.mz.killrs.manage_product.ManageProductViewModel
 import org.mz.products_overview.ProductsOverviewViewmodel
 import org.mz.killrs.profile.ProfileViewModel
 import org.mz.killrs.DetailsViewModel
+import org.mz.killrs.CartViewModel
 
 
 val sharedModule = module {
@@ -34,6 +36,7 @@ val sharedModule = module {
     viewModelOf(::AdminPanelViewModel)
     viewModelOf(::ProductsOverviewViewmodel)
     viewModelOf(::DetailsViewModel)
+    viewModelOf(::CartViewModel)
 }
 
 

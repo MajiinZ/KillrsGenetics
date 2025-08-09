@@ -58,6 +58,7 @@ kotlin {
                 implementation(project(path = ":shared"))
                 implementation(project(path = ":di"))
                 implementation(project(path = ":data"))
+
             }
         }
 

@@ -44,6 +44,7 @@ import org.mz.home.domain.BottomBarDestination
 import org.mz.home.domain.CustomDrawerState
 import org.mz.home.domain.isOpened
 import org.mz.home.domain.opposite
+import org.mz.killrs.CartScreen
 import org.mz.killrs.DetailsScreen
 import org.mz.killrs.shared.Exo2FontRegular
 import org.mz.killrs.shared.FontSize
@@ -216,12 +217,14 @@ fun HomeGraphScreen(
                                         navController.navigateUp()
                                     },
                                     navigateToCart = {
-                                        navController.navigate(Screen.ShoppingCart)
+                                        navController.navigate(Screen.Cart)
                                     },
                                 )
                             }
 
-                            composable<Screen.ShoppingCart> { }
+                            composable<Screen.Cart> {
+                                CartScreen()
+                            }
                             composable<Screen.Profile> { }
                             composable<Screen.Categories> { }
                         }

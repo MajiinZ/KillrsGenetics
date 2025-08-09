@@ -22,7 +22,7 @@ enum class BottomBarDestination(
     Cart(
         icon = Resources.Icon.ShoppingCart,
         title = "Cart",
-        screen = Screen.ShoppingCart
+        screen = Screen.Cart
     ),
     Profile(
         icon = Resources.Icon.Profile,

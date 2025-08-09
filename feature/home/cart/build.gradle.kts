@@ -23,6 +23,11 @@ kotlin {
     sourceSets {
         val desktopMain by getting
 
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.android.client)
+        }
+
 
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -35,20 +40,18 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtime.compose)
 
 
+            implementation(libs.coil3)
+            implementation(libs.coil3.compose)
+            implementation(libs.coil3.compose.core)
+            implementation(libs.coil3.network.ktor)
+            implementation(libs.coil3)
+
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.compose.navigation)
 
-            implementation(libs.messagebar.kmp)
 
             implementation(project(path = ":shared"))
             implementation(project(path = ":data"))
-            implementation(project(path = ":feature:home:products_overview"))
-            implementation(project(path = ":feature:details"))
-            implementation(project(path = ":feature:home:cart"))
-
-
-
 
         }
         commonTest.dependencies {
@@ -62,7 +65,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.mz.killrs.home"
+    namespace = "org.mz.killrs.home.cart"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

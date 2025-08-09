@@ -99,7 +99,7 @@ class ProductRepositoryImpl : ProductRepository {
                     .snapshots
                     .collectLatest { document ->
                         if (document.exists) {
-                           val product = Product(
+                            val product = Product(
                                 id = document.id,
                                 title = document.get(field = "title"),
                                 amountOfSeeds = document.get(field = "amountOfSeeds"),
@@ -143,6 +143,53 @@ class ProductRepositoryImpl : ProductRepository {
         )
         emit(RequestState.Success(fakeProduct))
     }
+
+    override fun readProductsByIdsFlow(ids: List<String>): Flow<RequestState<List<Product>>> =
+        channelFlow {
+            try {
+                val userId = getCurrentUserId()
+                if (userId != null) {
+                    val database = Firebase.firestore
+                    val productCollection = database.collection(collectionPath = "product")
+
+                    val allProducts = mutableListOf<Product>()
+                    val chunks = ids.chunked(10)
+
+                    chunks.forEachIndexed { index, chunk ->
+                        productCollection
+                            .where { "id" inArray chunk }
+                            .snapshots
+                            .collectLatest { query ->
+                                val products = query.documents.map { document ->
+                                    Product(
+                                        id = document.id,
+                                        title = document.get(field = "title"),
+                                        amountOfSeeds = document.get(field = "amountOfSeeds"),
+                                        description = document.get(field = "description"),
+                                        thumbnail = document.get(field = "thumbnail"),
+                                        category = document.get(field = "category"),
+                                        strains = document.get(field = "strains"),
+                                        price = document.get(field = "price"),
+                                        isPopular = document.get(field = "isPopular"),
+                                        isDiscounted = document.get(field = "isDiscounted"),
+                                        isNew = document.get(field = "isNew"),
+                                        createdAt = document.get(field = "createdAt")
+                                    )
+                                }
+                                allProducts.addAll(products)
+
+                                if (index == chunks.lastIndex){
+                                    send(RequestState.Success(allProducts))
+                                }
+                            }
+                    }
+                } else {
+                    send(RequestState.Error("User is not available."))
+                }
+            } catch (e: Exception) {
+                send(RequestState.Error("Error while reading a selected product: ${e.message}"))
+            }
+        }
 }
 
 

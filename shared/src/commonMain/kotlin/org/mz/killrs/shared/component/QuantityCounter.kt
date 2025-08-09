@@ -27,24 +27,29 @@ import org.mz.killrs.shared.SurfaceLighter
 import org.mz.killrs.shared.TextPrimary
 import org.mz.killrs.shared.domain.QuantityCounterSize
 
+
 @Composable
 fun QuantityCounter(
     modifier: Modifier = Modifier,
     size: QuantityCounterSize,
-    value: Int,
+    value: String,
     onMinusClick: (Int) -> Unit,
     onPlusClick: (Int) -> Unit,
 ) {
+    // Parse value once
+    val quantity = value.toIntOrNull() ?: MIN_QUANTITY
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(size.spacing)
     ) {
+        // Minus button
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(size = 6.dp))
                 .background(SurfaceBrand)
-                .clickable { if (value > MIN_QUANTITY) onMinusClick(value - 1) }
+                .clickable { if (quantity > MIN_QUANTITY) onMinusClick(quantity - 1) }
                 .padding(size.padding),
             contentAlignment = Alignment.Center
         ) {
@@ -55,6 +60,8 @@ fun QuantityCounter(
                 tint = IconPrimary
             )
         }
+
+        // Quantity text
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(size = 6.dp))
@@ -63,27 +70,30 @@ fun QuantityCounter(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = value.toString(),
+                text = quantity.toString(),
                 fontSize = FontSize.SMALL,
                 lineHeight = FontSize.SMALL * 1,
                 fontWeight = FontWeight.Medium,
                 color = TextPrimary
             )
         }
+
+        // Plus button
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(size = 6.dp))
                 .background(SurfaceBrand)
-                .clickable { if (value < MAX_QUANTITY) onPlusClick(value + 1) }
+                .clickable { if (quantity < MAX_QUANTITY) onPlusClick(quantity + 1) }
                 .padding(size.padding),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 modifier = Modifier.size(14.dp),
-                painter = painterResource(Resources.Icon.Minus),
+                painter = painterResource(Resources.Icon.Dollar), // ✅ use plus icon
                 contentDescription = "Plus icon",
                 tint = IconPrimary
             )
         }
     }
 }
+

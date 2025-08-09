@@ -13,7 +13,7 @@ sealed class Screen {
     data object ProductsOverview : Screen()
 
     @Serializable
-    data object ShoppingCart : Screen()
+    data object Cart : Screen()
 
     @Serializable
     data object Profile : Screen()
