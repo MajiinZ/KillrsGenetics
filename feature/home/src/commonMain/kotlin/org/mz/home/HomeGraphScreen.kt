@@ -65,7 +65,8 @@ fun HomeGraphScreen(
     navigateToAuth: () -> Unit,
     navigateToProfile: () -> Unit,
     navigateToAdmin: () -> Unit,
-    navigateToDetails: (String) -> Unit
+    navigateToDetails: (String) -> Unit,
+    navigateBack: () -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
@@ -112,8 +113,12 @@ fun HomeGraphScreen(
             onProfileClick = {
                 navigateToProfile()
             },
-            onCategoriesClick = {},
-            onCartClick = {},
+            onCategoriesClick = {
+
+            },
+            onCartClick = {
+                navController.navigate(Screen.Cart)
+            },
             onOrdersClick = {},
             onAdminPanelClick = {
                 navigateToAdmin()
@@ -173,7 +178,9 @@ fun HomeGraphScreen(
                             scrolledContainerColor = Surface
                         ),
                         actions = {
-                            IconButton(onClick = {}) {
+                            IconButton(onClick = {
+
+                            }) {
                                 // Placeholder for future actions
                             }
                         }
@@ -225,17 +232,20 @@ fun HomeGraphScreen(
                             composable<Screen.Cart> {
                                 CartScreen()
                             }
-                            composable<Screen.Profile> { }
-                            composable<Screen.Categories> { }
+                            composable<Screen.Profile> {
+
+                            }
+                            composable<Screen.Categories> {
+
+                            }
                         }
 
                         Spacer(modifier = Modifier.height(12.dp))
 
                         Box(modifier = Modifier.padding(12.dp)) {
                             BottomBar(
-                                selected = selectedDestination,
                                 onSelect = { destination ->
-                                    navController.navigate(destination.screen) {
+                                    navController.navigate(destination.screen) { // ✅ use Screen type
                                         launchSingleTop = true
                                         popUpTo<Screen.ProductsOverview> {
                                             saveState = true
@@ -243,7 +253,8 @@ fun HomeGraphScreen(
                                         }
                                         restoreState = true
                                     }
-                                }
+                                },
+                                selected = selectedDestination
                             )
                         }
                     }

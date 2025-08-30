@@ -40,4 +40,5 @@ interface CustomerRepository {
         onError: (String) -> Unit
     )
     suspend fun signOut(): RequestState<Unit>
+
 }

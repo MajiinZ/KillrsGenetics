@@ -1,44 +1,38 @@
 package org.mz.killrs
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.stateIn
-import org.mz.data.domain.CartRepository
+import kotlinx.coroutines.launch
 import org.mz.data.domain.CustomerRepository
 import org.mz.data.domain.ProductRepository
 import org.mz.killrs.shared.util.RequestState
 
 class CartViewModel(
     private val customerRepository: CustomerRepository,
-    private val productRepository: ProductRepository
-
+    private val productRepository: ProductRepository,
 ) : ViewModel() {
-  private val customer = customerRepository.readCustomerFlow()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = RequestState.Loading
-        )
+    private val customer = customerRepository.readCustomerFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-   private val products = customer
+    private val products = customer
         .flatMapLatest { customerState ->
             if (customerState.isSuccess()) {
                 val productIds = customerState.getSuccessData().cart.map { it.productId }.toSet()
-                productRepository.readProductsByIdsFlow(productIds.toList())
+                if (productIds.isNotEmpty()) {
+                    productRepository.readProductsByIdsFlow(productIds.toList())
+                } else flowOf(RequestState.Success(emptyList()))
             } else if (customerState.isError()) {
-                flowOf(
-                    RequestState.Error(customerState.getErrorMessage())
-                )
+                flowOf(RequestState.Error(customerState.getErrorMessage()))
             } else flowOf(RequestState.Loading)
         }
 
-   val cartItemsWithProducts = combine(customer, products) { customerState, productsState ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val cartItemsWithProducts = combine(customer, products) { customerState, productsState ->
         when {
             customerState.isSuccess() && productsState.isSuccess() -> {
                 val cart = customerState.getSuccessData().cart
@@ -48,6 +42,7 @@ class CartViewModel(
                     val product = products.find { it.id == cartItem.productId }
                     product?.let { cartItem to it }
                 }
+
                 RequestState.Success(result)
             }
 
@@ -55,6 +50,36 @@ class CartViewModel(
             productsState.isError() -> RequestState.Error(productsState.getErrorMessage())
 
             else -> RequestState.Loading
+        }
+    }
+
+    fun updateCartItemQuantity(
+        id: String,
+        quantity: Int,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit,
+    ) {
+        viewModelScope.launch {
+            customerRepository.updateCartItemQuantity(
+                id = id,
+                quantity = quantity,
+                onSuccess = onSuccess,
+                onError = onError
+            )
+        }
+    }
+
+    fun deleteCartItem(
+        id: String,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit,
+    ) {
+        viewModelScope.launch {
+            customerRepository.deleteCartItem(
+                id = id,
+                onSuccess = onSuccess,
+                onError = onError
+            )
         }
     }
 }

@@ -57,5 +57,7 @@ object Resources {
 
         //   val PaypalLogo = Res.drawable.paypal_logo
         val KillrsLogo = Res.drawable.killrs_logo_blk
+
+        val Delete = Res.drawable.delete
     }
 }

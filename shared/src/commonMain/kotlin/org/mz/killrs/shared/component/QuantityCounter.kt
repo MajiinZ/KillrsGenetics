@@ -32,12 +32,11 @@ import org.mz.killrs.shared.domain.QuantityCounterSize
 fun QuantityCounter(
     modifier: Modifier = Modifier,
     size: QuantityCounterSize,
-    value: String,
+    value: Int,
     onMinusClick: (Int) -> Unit,
     onPlusClick: (Int) -> Unit,
 ) {
     // Parse value once
-    val quantity = value.toIntOrNull() ?: MIN_QUANTITY
 
     Row(
         modifier = modifier,
@@ -49,7 +48,7 @@ fun QuantityCounter(
             modifier = Modifier
                 .clip(RoundedCornerShape(size = 6.dp))
                 .background(SurfaceBrand)
-                .clickable { if (quantity > MIN_QUANTITY) onMinusClick(quantity - 1) }
+                .clickable { if (value > MIN_QUANTITY) onMinusClick(value - 1) }
                 .padding(size.padding),
             contentAlignment = Alignment.Center
         ) {
@@ -70,7 +69,7 @@ fun QuantityCounter(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = quantity.toString(),
+                text = "{$value}",
                 fontSize = FontSize.SMALL,
                 lineHeight = FontSize.SMALL * 1,
                 fontWeight = FontWeight.Medium,
@@ -83,7 +82,7 @@ fun QuantityCounter(
             modifier = Modifier
                 .clip(RoundedCornerShape(size = 6.dp))
                 .background(SurfaceBrand)
-                .clickable { if (quantity < MAX_QUANTITY) onPlusClick(quantity + 1) }
+                .clickable { if (value < MAX_QUANTITY) onPlusClick(value + 1) }
                 .padding(size.padding),
             contentAlignment = Alignment.Center
         ) {

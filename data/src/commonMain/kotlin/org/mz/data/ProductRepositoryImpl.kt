@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import org.mz.data.domain.ProductRepository
 import org.mz.killrs.shared.domain.Product
+import org.mz.killrs.shared.domain.ProductCategory
 import org.mz.killrs.shared.util.RequestState
 
 class ProductRepositoryImpl : ProductRepository {
@@ -89,34 +90,48 @@ class ProductRepositoryImpl : ProductRepository {
         }
     }
 
+  //  override fun getProduct(productId: String): Flow<RequestState<Product>> = flow {
+    //        emit(RequestState.Loading)
+    //        // You could simulate a product retrieval here
+    //        val fakeProduct = Product(
+    //            id = productId,
+    //            title = "Sample Product",
+    //            description = "This is a placeholder product.",
+    //            price = 0.0,
+    //            thumbnail = "",
+    //            category = "",
+    //            isPopular = false,
+    //            isNew = false,
+    //            isDiscounted = false,
+    //            createdAt = 0L
+    //        )
+    //        emit(RequestState.Success(fakeProduct))
+    //    }
+
     override fun readProductByIdFlow(id: String): Flow<RequestState<Product>> = channelFlow {
         try {
-            val userId = getCurrentUserId()
-            if (userId != null) {
+            val userID = getCurrentUserId()
+            if (userID != null) {
                 val database = Firebase.firestore
                 database.collection(collectionPath = "product")
                     .document(id)
                     .snapshots
                     .collectLatest { document ->
-                        if (document.exists) {
-                            val product = Product(
-                                id = document.id,
-                                title = document.get(field = "title"),
-                                amountOfSeeds = document.get(field = "amountOfSeeds"),
-                                description = document.get(field = "description"),
-                                thumbnail = document.get(field = "thumbnail"),
-                                category = document.get(field = "category"),
-                                strains = document.get(field = "strains"),
-                                price = document.get(field = "price"),
-                                isPopular = document.get(field = "isPopular"),
-                                isDiscounted = document.get(field = "isDiscounted"),
-                                isNew = document.get(field = "isNew"),
-                                createdAt = document.get(field = "createdAt")
-                            )
-                            send(RequestState.Success(product.copy(title = product.title.uppercase())))
-                        } else {
-                            send(RequestState.Error("Selected product does not exsist."))
-                        }
+                        val product = Product(
+                            id = document.id,
+                            title = document.get(field = "title"),
+                            amountOfSeeds = document.get(field = "amountOfSeeds"),
+                            description = document.get(field = "description"),
+                            thumbnail = document.get(field = "thumbnail"),
+                            category = document.get(field = "category"),
+                            strains = document.get(field = "strains"),
+                            price = document.get(field = "price"),
+                            isPopular = document.get(field = "isPopular"),
+                            isDiscounted = document.get(field = "isDiscounted"),
+                            isNew = document.get(field = "isNew"),
+                            createdAt = document.get(field = "createdAt")
+                        )
+                        send(RequestState.Success(product.copy(title = product.title.uppercase())))
                     }
             } else {
                 send(RequestState.Error("User is not available."))
@@ -126,23 +141,6 @@ class ProductRepositoryImpl : ProductRepository {
         }
     }
 
-    override fun getProduct(productId: String): Flow<RequestState<Product>> = flow {
-        emit(RequestState.Loading)
-        // You could simulate a product retrieval here
-        val fakeProduct = Product(
-            id = productId,
-            title = "Sample Product",
-            description = "This is a placeholder product.",
-            price = 0.0,
-            thumbnail = "",
-            category = "",
-            isPopular = false,
-            isNew = false,
-            isDiscounted = false,
-            createdAt = 0L
-        )
-        emit(RequestState.Success(fakeProduct))
-    }
 
     override fun readProductsByIdsFlow(ids: List<String>): Flow<RequestState<List<Product>>> =
         channelFlow {
@@ -164,21 +162,19 @@ class ProductRepositoryImpl : ProductRepository {
                                     Product(
                                         id = document.id,
                                         title = document.get(field = "title"),
-                                        amountOfSeeds = document.get(field = "amountOfSeeds"),
+                                        createdAt = document.get(field = "createdAt"),
                                         description = document.get(field = "description"),
                                         thumbnail = document.get(field = "thumbnail"),
                                         category = document.get(field = "category"),
-                                        strains = document.get(field = "strains"),
                                         price = document.get(field = "price"),
                                         isPopular = document.get(field = "isPopular"),
                                         isDiscounted = document.get(field = "isDiscounted"),
-                                        isNew = document.get(field = "isNew"),
-                                        createdAt = document.get(field = "createdAt")
+                                        isNew = document.get(field = "isNew")
                                     )
                                 }
-                                allProducts.addAll(products)
+                                allProducts.addAll(products.map { it.copy(title = it.title.uppercase()) })
 
-                                if (index == chunks.lastIndex){
+                                if (index == chunks.lastIndex) {
                                     send(RequestState.Success(allProducts))
                                 }
                             }
@@ -189,7 +185,48 @@ class ProductRepositoryImpl : ProductRepository {
             } catch (e: Exception) {
                 send(RequestState.Error("Error while reading a selected product: ${e.message}"))
             }
+
+        }
+
+    override fun readProductsByCategoryFlow(category: ProductCategory): Flow<RequestState<List<Product>>> =
+        channelFlow {
+            try {
+                val userId = getCurrentUserId()
+                if (userId != null) {
+                    val database = Firebase.firestore
+                    database.collection(collectionPath = "product")
+                        .where { "category" equalTo category.name }
+                        .snapshots
+                        .collectLatest { query ->
+                            val products = query.documents.map { document ->
+                                Product(
+                                    id = document.id,
+                                    title = document.get(field = "title"),
+                                    amountOfSeeds = document.get(field = "amountOfSeeds"),
+                                    description = document.get(field = "description"),
+                                    thumbnail = document.get(field = "thumbnail"),
+                                    category = document.get(field = "category"),
+                                    strains = document.get(field = "strains"),
+                                    price = document.get(field = "price"),
+                                    isPopular = document.get(field = "isPopular"),
+                                    isDiscounted = document.get(field = "isDiscounted"),
+                                    isNew = document.get(field = "isNew"),
+                                    createdAt = document.get(field = "createdAt")
+
+                                )
+                            }
+                            send(RequestState.Success(products.map { it.copy(title = it.title.uppercase()) }))
+
+                        }
+
+
+                } else {
+                    send(RequestState.Error("User is not available."))
+                }
+
+            } catch (e: Exception) {
+                send(RequestState.Error("Error while reading a selected product: ${e.message}"))
+            }
         }
 }
-
 

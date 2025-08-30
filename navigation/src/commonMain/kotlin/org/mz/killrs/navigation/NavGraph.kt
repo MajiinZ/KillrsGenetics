@@ -17,10 +17,12 @@ fun SetupNavGraph(
     startDestination: Screen = Screen.Auth
 ) {
     val navController = rememberNavController()
+
     NavHost(
         navController = navController,
-        startDestination = Screen.Auth
+        startDestination = startDestination
     ) {
+        // 🔹 Authentication
         composable<Screen.Auth> {
             AuthenticationScreen(
                 navigateToHome = {
@@ -30,6 +32,8 @@ fun SetupNavGraph(
                 },
             )
         }
+
+        // 🔹 Main app (with nested bottom bar NavHost inside)
         composable<Screen.HomeGraph> {
             HomeGraphScreen(
                 navigateToAuth = {
@@ -39,47 +43,55 @@ fun SetupNavGraph(
                 },
                 navigateToProfile = {
                     navController.navigate(Screen.Profile)
+                    navController.navigateUp()
+
                 },
                 navigateToAdmin = {
                     navController.navigate(Screen.Admin)
                 },
                 navigateToDetails = { productId ->
                     navController.navigate(Screen.Details(id = productId))
+                    navController.navigateUp()
+
+                },
+                navigateBack = {
+                    navController.navigateUp()
                 }
             )
         }
+
+        // 🔹 Profile
         composable<Screen.Profile> {
             ProfileScreen(
-                navigateBack = {
-                    navController.navigateUp()
-                }
+                navigateBack = { navController.navigateUp() }
             )
         }
+
+        // 🔹 Admin
         composable<Screen.Admin> {
             AdminPanelScreen(
-                navigateBack = {
-                    navController.navigateUp()
-                },
+                navigateBack = { navController.navigateUp() },
                 navigateToManageProduct = { id ->
                     navController.navigate(Screen.ManageProduct(id = id))
                 }
             )
         }
+
+        // 🔹 Manage product
         composable<Screen.ManageProduct> {
             ManageProductScreen(
-                navigateBack = {
-                    navController.navigateUp()
-                },
-                navigateToEdit = {
-                    navController.navigate(Screen.ManageProduct)
+                navigateBack = { navController.navigateUp() },
+                navigateToEdit = { id ->
+                    // must provide an id here
+                    navController.navigate(Screen.ManageProduct(id = id))
                 }
             )
         }
+
+        // 🔹 Details (from anywhere, including nested HomeGraph)
         composable<Screen.Details> {
             DetailsScreen(
-                navigateBack = {
-                    navController.navigateUp()
-                },
+                navigateBack = { navController.navigateUp() },
                 navigateToCart = {
                     navController.navigate(Screen.Cart)
                 },

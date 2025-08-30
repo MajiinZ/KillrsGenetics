@@ -141,6 +141,8 @@ class CustomerRepositoryImpl : CustomerRepository {
         }
     }
 
+
+
     override suspend fun addItemToCart(
         cartItem: CartItem,
         onSuccess: () -> Unit,
@@ -155,25 +157,38 @@ class CustomerRepositoryImpl : CustomerRepository {
                 val existingCustomer = customerCollection
                     .document(currentUserId)
                     .get()
+
                 if (existingCustomer.exists) {
-                    val existingCart = existingCustomer.get<List<CartItem>>("cart")
+                    val existingCart = existingCustomer.get<List<CartItem>>("cart") ?: emptyList()
                     val updatedCart = existingCart.toMutableList()
-                    customerCollection.document(currentUserId)
-                        .set(
-                           data = mapOf("cart" to updatedCart),
-                            merge = true
+
+                    // See if the product is already in the cart
+                    val existingIndex = updatedCart.indexOfFirst { it.id == cartItem.id }
+                    if (existingIndex != -1) {
+                        val oldItem = updatedCart[existingIndex]
+                        updatedCart[existingIndex] = oldItem.copy(
+                            quantity = oldItem.quantity + cartItem.quantity
                         )
+                    } else {
+                        updatedCart.add(cartItem)
+                    }
+
+                    customerCollection.document(currentUserId)
+                        .update(data = mapOf("cart" to updatedCart))
+
                     onSuccess()
+                } else {
+                    onError("Customer document does not exist.")
                 }
-
-
+            } else {
+                onError("User is not available.")
             }
         } catch (e: Exception) {
             onError("Error while adding a product to cart: ${e.message}")
         }
-
-
     }
+
+
 
     override suspend fun updateCartItemQuantity(
         id: String,
