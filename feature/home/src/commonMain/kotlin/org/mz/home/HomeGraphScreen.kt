@@ -2,6 +2,7 @@ package org.mz.home
 
 import ContentWithMessageBar
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
@@ -22,6 +23,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -36,6 +38,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.mz.home.component.BottomBar
@@ -46,6 +49,9 @@ import org.mz.home.domain.isOpened
 import org.mz.home.domain.opposite
 import org.mz.killrs.CartScreen
 import org.mz.killrs.DetailsScreen
+import org.mz.killrs.categories.CategoriesScreen
+import org.mz.killrs.category_search.CategorySearchScreen
+import org.mz.killrs.profile.ProfileScreen
 import org.mz.killrs.shared.Exo2FontRegular
 import org.mz.killrs.shared.FontSize
 import org.mz.killrs.shared.IconPrimary
@@ -53,7 +59,9 @@ import org.mz.killrs.shared.Resources
 import org.mz.killrs.shared.Surface
 import org.mz.killrs.shared.SurfaceLighter
 import org.mz.killrs.shared.TextPrimary
+import org.mz.killrs.shared.domain.ProductCategory
 import org.mz.killrs.shared.navigation.Screen
+import org.mz.killrs.shared.util.RequestState
 import org.mz.killrs.shared.util.getScreenWidth
 import org.mz.products_overview.ProductsOverviewScreen
 import rememberMessageBarState
@@ -66,7 +74,9 @@ fun HomeGraphScreen(
     navigateToProfile: () -> Unit,
     navigateToAdmin: () -> Unit,
     navigateToDetails: (String) -> Unit,
-    navigateBack: () -> Unit
+    navigateToCart: () -> Unit,
+    navigateToCategorySearch: (String) -> Unit,
+    navigateToCheckout: (String) -> Unit
 ) {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState()
@@ -75,10 +85,8 @@ fun HomeGraphScreen(
         derivedStateOf {
             val route = currentRoute.value?.destination?.route.orEmpty()
             when {
-                route.contains(BottomBarDestination.ProductsOverview.screen.toString()) -> BottomBarDestination.ProductsOverview
                 route.contains(BottomBarDestination.Cart.screen.toString()) -> BottomBarDestination.Cart
                 route.contains(BottomBarDestination.Profile.screen.toString()) -> BottomBarDestination.Profile
-                route.contains(BottomBarDestination.Categories.screen.toString()) -> BottomBarDestination.Categories
                 else -> BottomBarDestination.ProductsOverview
             }
         }
@@ -100,7 +108,12 @@ fun HomeGraphScreen(
 
     val viewModel = koinViewModel<HomeGraphViewModel>()
     val customer by viewModel.customer.collectAsState()
+    val totalAmount by viewModel.totalAmountFlow.collectAsState(RequestState.Loading)
     val messageBarState = rememberMessageBarState()
+
+    LaunchedEffect(Unit) {
+        println("TOTAL AMOUNT: $totalAmount")
+    }
 
     Box(
         modifier = Modifier
@@ -110,26 +123,16 @@ fun HomeGraphScreen(
     ) {
         CustomDrawer(
             customer = customer,
-            onProfileClick = {
-                navigateToProfile()
-            },
-            onCategoriesClick = {
-
-            },
-            onCartClick = {
-                navController.navigate(Screen.Cart)
-            },
+            onProfileClick = { navigateToProfile() },
+            onCategoriesClick = { },
+            onCartClick = { navController.navigate(Screen.Cart) },
             onOrdersClick = {},
-            onAdminPanelClick = {
-                navigateToAdmin()
-            },
+            onAdminPanelClick = { navigateToAdmin() },
             onSettingsClick = {},
             onSignOutClick = {
                 viewModel.signOut(
                     onSuccess = navigateToAuth,
-                    onError = { message ->
-                        messageBarState.addError(message)
-                    }
+                    onError = { message -> messageBarState.addError(message) }
                 )
             }
         )
@@ -140,10 +143,7 @@ fun HomeGraphScreen(
                 .clip(RoundedCornerShape(animatedRadius))
                 .offset(x = animatedOffset)
                 .scale(animatedScale)
-                .shadow(
-                    elevation = 20.dp,
-                    shape = RoundedCornerShape(20.dp)
-                )
+                .shadow(20.dp, RoundedCornerShape(20.dp))
         ) {
             Scaffold(
                 containerColor = Surface,
@@ -158,6 +158,33 @@ fun HomeGraphScreen(
                                     color = TextPrimary
                                 )
                             }
+                        },
+                        actions = {
+                            AnimatedVisibility(
+                                visible = selectedDestination == BottomBarDestination.Cart,
+                            ) {
+
+                                IconButton(
+                                    onClick = {
+                                        if (totalAmount.isSuccess()) {
+                                            navigateToCheckout(
+                                                totalAmount.getSuccessData().toString()
+                                            )
+
+                                        } else if (totalAmount.isError()) {
+                                            messageBarState.addError("Something went wrong")
+                                        }
+                                    }
+
+                                ) {
+                                    Icon(
+                                        painter = painterResource(Resources.Icon.ShoppingCartFilled),
+                                        contentDescription = "Right Arrow",
+                                        tint = IconPrimary
+                                    )
+                                }
+                            }
+
                         },
                         navigationIcon = {
                             IconButton(onClick = {
@@ -176,14 +203,7 @@ fun HomeGraphScreen(
                             navigationIconContentColor = TextPrimary,
                             actionIconContentColor = IconPrimary,
                             scrolledContainerColor = Surface
-                        ),
-                        actions = {
-                            IconButton(onClick = {
-
-                            }) {
-                                // Placeholder for future actions
-                            }
-                        }
+                        )
                     )
                 }
             ) { padding ->
@@ -216,45 +236,64 @@ fun HomeGraphScreen(
                                     navigateToDetails = navigateToDetails
                                 )
                             }
+                            composable<Screen.Cart> {
+                                CartScreen(
+                                    navigateToDetails = navigateToDetails,
+                                    navigateToCheckout = navigateToCheckout,
+                                    navigateToProfile = navigateToProfile,
+                                    navigateToCategories = navigateToCategorySearch,
+                                    navigateToCart = navigateToCart,
+                                    navigateToPayment = {
+                                        navigateToCheckout(
+                                            totalAmount.getSuccessData().toString()
+                                        )
+                                    }
 
-
-                            composable<Screen.Details>{
-                                DetailsScreen(
-                                    navigateBack = {
-                                        navController.navigateUp()
-                                    },
-                                    navigateToCart = {
-                                        navController.navigate(Screen.Cart)
-                                    },
                                 )
                             }
-
-                            composable<Screen.Cart> {
-                                CartScreen()
-                            }
                             composable<Screen.Profile> {
-
+                                ProfileScreen(
+                                    navigateBack = { navController.navigateUp() }
+                                )
                             }
                             composable<Screen.Categories> {
-
+                                CategoriesScreen(
+                                    navigateToCategories = { categoryName ->
+                                        navController.navigate(Screen.CategorySearch(categoryName))
+                                    }
+                                )
+                            }
+                            composable<Screen.Details> {
+                                DetailsScreen(
+                                    navigateBack = { navController.popBackStack() },
+                                    navigateToCart = { navController.navigate("home/cart") }
+                                )
+                            }
+                            composable<Screen.CategorySearch> {
+                                val category =
+                                    ProductCategory.valueOf(it.toRoute<Screen.CategorySearch>().category.toString())
+                                CategorySearchScreen(
+                                    category = category,
+                                    navigateBack = { navController.navigateUp() },
+                                    navigateToDetails = { navController.navigate(Screen.Details) }
+                                )
                             }
                         }
-
                         Spacer(modifier = Modifier.height(12.dp))
-
                         Box(modifier = Modifier.padding(12.dp)) {
                             BottomBar(
                                 onSelect = { destination ->
-                                    navController.navigate(destination.screen) { // ✅ use Screen type
+                                    navController.navigate(destination.screen) {
                                         launchSingleTop = true
-                                        popUpTo<Screen.ProductsOverview> {
+                                        popUpTo<Screen.HomeGraph> {
                                             saveState = true
                                             inclusive = false
                                         }
                                         restoreState = true
                                     }
                                 },
-                                selected = selectedDestination
+                                selected = selectedDestination,
+                                customer = customer
                             )
                         }
                     }

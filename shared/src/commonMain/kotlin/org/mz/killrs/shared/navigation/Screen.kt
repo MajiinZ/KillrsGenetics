@@ -2,6 +2,7 @@ package org.mz.killrs.shared.navigation
 
 import kotlinx.serialization.Serializable
 
+@Serializable
 sealed class Screen {
     @Serializable
     data object Auth : Screen()
@@ -22,14 +23,17 @@ sealed class Screen {
     data object Categories : Screen()
 
     @Serializable
-    data object SignOut : Screen()
-
-    @Serializable
     data object Admin : Screen()
+
+    // 🔹 Routes with arguments
+    @Serializable
+    data class CategorySearch(
+        val category: String? = null
+    ) : Screen()
 
     @Serializable
     data class ManageProduct(
-        val id: String? = null
+        val id: String? = null,
     ) : Screen()
 
     @Serializable
@@ -37,4 +41,15 @@ sealed class Screen {
         val id: String
     ) : Screen()
 
+    @Serializable
+    data class Checkout(
+        val totalAmount: String
+    ) : Screen()
+
+    @Serializable
+    data class PaymentCompleted(
+        val isSuccess: Boolean? = null,
+        val error: String? = null,
+        val token: String? = null,
+    ) : Screen()
 }

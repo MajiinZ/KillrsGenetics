@@ -29,12 +29,19 @@ import org.mz.killrs.shared.component.InfoCard
 
 
 @Composable
-fun CartScreen() {
+fun CartScreen(
+    navigateToPayment: () -> Unit,
+    navigateToCheckout: (String) -> Unit,
+    navigateToProfile: () -> Unit,
+    navigateToCategories: (String) -> Unit,
+    navigateToCart: () -> Unit,
+    navigateToDetails: (String) -> Unit
+) {
 
     val messageBarState = rememberMessageBarState()
     val viewModel = koinViewModel<CartViewModel>()
     val cartItemsWithProducts by viewModel.cartItemsWithProducts.collectAsState(RequestState.Loading)
-
+    val totalAmount by viewModel.totalAmountFlow.collectAsState(RequestState.Loading)
 
     cartItemsWithProducts.DisplayResult(
         onLoading = { LoadingCard(modifier = Modifier.fillMaxSize()) },

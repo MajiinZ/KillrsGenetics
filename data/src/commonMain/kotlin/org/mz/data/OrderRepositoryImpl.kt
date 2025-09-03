@@ -7,7 +7,7 @@ import dev.gitlive.firebase.firestore.firestore
 import org.mz.data.domain.OrderRepository
 import org.mz.killrs.shared.domain.Order
 
-abstract class OrderRepositoryImpl(
+ class OrderRepositoryImpl(
     private val customerRepository: CustomerRepository,
 ) : OrderRepository {
     override fun getCurrentUserId() = Firebase.auth.currentUser?.uid

@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlin.reflect.KFunction1
 
 @Composable
 fun ProfileForm(
@@ -22,12 +23,15 @@ fun ProfileForm(
     city: String,
     onCityChanged: (String) -> Unit,
     zipCode: String,
-    onZipCodeChanged: Unit,
+    onPostalCodeChanged: (Any) -> Unit,
     phoneNumber: String,
-    //onPhoneNumberChanged: (String) -> Unit,
-    password: String,
+    onPhoneNumberChanged: (String) -> Unit,
+    password: () -> Unit,
     onPasswordChanged: (String) -> Unit,
     confirmPassword: String,
+    onConfirmPasswordChanged: (String) -> Unit,
+    state: String,
+    onStateSelect: (String) -> Unit,
 
     ) {
     Column(
@@ -65,6 +69,36 @@ fun ProfileForm(
             placeholder = "City",
             error = city.length !in 3..50
         )
+
+        CustomTextField(
+            value = phoneNumber,
+            onValueChange = onPhoneNumberChanged,
+            placeholder = "Phone Number",
+            error = phoneNumber.length !in 5..30)
+
+        CustomTextField(
+            value = password.toString(),
+            onValueChange = onPasswordChanged,
+            placeholder = "Password",
+            error = password.toString().length !in 8..50)
+
+        CustomTextField(
+            value = confirmPassword,
+            onValueChange = onConfirmPasswordChanged,
+            placeholder = "Confirm Password",
+            error = confirmPassword.length !in 8..50)
+
+        CustomTextField(
+            value = state,
+            onValueChange = onStateSelect,
+            placeholder = "State",
+            error = state.length !in 3..50)
+
+        CustomTextField(
+            value = "",
+            onValueChange = {},
+            placeholder = "Address",
+            error = false)
     }
 }
 

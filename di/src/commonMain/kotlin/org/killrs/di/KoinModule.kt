@@ -8,9 +8,11 @@ import org.koin.dsl.module
 import org.mz.admin.AdminPanelViewModel
 import org.mz.data.AdminRepositoryImpl
 import org.mz.data.CustomerRepositoryImpl
+import org.mz.data.OrderRepositoryImpl
 import org.mz.data.ProductRepositoryImpl
 import org.mz.data.domain.AdminRepository
 import org.mz.data.domain.CustomerRepository
+import org.mz.data.domain.OrderRepository
 import org.mz.data.domain.ProductRepository
 import org.mz.home.HomeGraphViewModel
 import org.mz.killrs.CartViewModel
@@ -19,13 +21,15 @@ import org.mz.killrs.auth.AuthViewModel
 import org.mz.killrs.manage_product.ManageProductViewModel
 import org.mz.killrs.profile.ProfileViewModel
 import org.mz.products_overview.ProductsOverviewViewmodel
+import org.mz.killrs.categories.CategoriesViewModel
+import org.mz.killrs.CheckoutViewModel
 
 
 val sharedModule = module {
     single<CustomerRepository>{CustomerRepositoryImpl()}
     single<AdminRepository>{ AdminRepositoryImpl() }
     single<ProductRepository>{ ProductRepositoryImpl() }
-
+    single<OrderRepository>{ OrderRepositoryImpl(get()) }
 
     viewModelOf(::AuthViewModel)
     viewModelOf(::HomeGraphViewModel)
@@ -35,6 +39,8 @@ val sharedModule = module {
     viewModelOf(::ProductsOverviewViewmodel)
     viewModelOf(::DetailsViewModel)
     viewModelOf(::CartViewModel)
+    viewModelOf(::CategoriesViewModel)
+    viewModelOf(::CheckoutViewModel)
 }
 
 

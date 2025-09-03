@@ -64,7 +64,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.mz.killrs.home.cart"
+    namespace = "org.mz.killrs.cart"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {

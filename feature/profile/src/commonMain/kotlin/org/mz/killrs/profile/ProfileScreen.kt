@@ -28,6 +28,7 @@ import org.mz.killrs.shared.SurfaceBrand
 import org.mz.killrs.shared.SurfaceError
 import org.mz.killrs.shared.TextPrimary
 import org.mz.killrs.shared.TextWhite
+import org.mz.killrs.shared.component.CheckoutForm
 import org.mz.killrs.shared.component.InfoCard
 import org.mz.killrs.shared.component.LoadingCard
 import org.mz.killrs.shared.component.PrimaryButton
@@ -107,6 +108,8 @@ fun ProfileScreen(
                         Column(modifier = Modifier.fillMaxSize()) {
                             ProfileForm(
                                 modifier = Modifier.weight(1f),
+                                state = screenState.state.abbreviation,
+                                onStateSelect = viewModel::updateState,
                                 firstName = screenState.firstName,
                                 onFirstNameChanged = viewModel::updateFirstName,
                                 lastName = screenState.lastName,
@@ -114,14 +117,16 @@ fun ProfileScreen(
                                 email = screenState.email,
                                 city = screenState.city ?: "",
                                 onCityChanged = viewModel::updateCity,
-                                zipCode = screenState.zipCode?.toString() ?: "",
-                                onZipCodeChanged = viewModel.updatePostalCode(value = 0),
                                 phoneNumber = screenState.phoneNumber?.number ?: "",
-                                //onPhoneNumberChanged = viewModel::updatePhoneNumber,
-                                password = "",
-                                onPasswordChanged = {},
-                                confirmPassword = ""
+                                onPhoneNumberChanged = {viewModel::updatePhoneNumber},
+                                zipCode = screenState.zipCode?.toString() ?: "",
+                                onPostalCodeChanged = {viewModel::updatePostalCode},
+                                password = {screenState.password},
+                                onPasswordChanged = viewModel::updatePassword,
+                                confirmPassword = screenState.confirmPassword,
+                                onConfirmPasswordChanged = viewModel::updateConfirmPassword
                             )
+
                             Spacer(modifier = Modifier.height(12.dp))
                             PrimaryButton(
                                 text = "Update",

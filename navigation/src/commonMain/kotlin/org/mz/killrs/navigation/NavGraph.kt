@@ -1,15 +1,23 @@
+// SetupNavGraph.kt
 package org.mz.killrs.navigation
 
+
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import org.mz.admin.AdminPanelScreen
 import org.mz.home.HomeGraphScreen
+import org.mz.killrs.CheckoutScreen
 import org.mz.killrs.DetailsScreen
 import org.mz.killrs.auth.AuthenticationScreen
+import org.mz.killrs.category_search.CategorySearchScreen
 import org.mz.killrs.manage_product.ManageProductScreen
 import org.mz.killrs.profile.ProfileScreen
+import org.mz.killrs.shared.domain.ProductCategory
 import org.mz.killrs.shared.navigation.Screen
 
 @Composable
@@ -20,7 +28,7 @@ fun SetupNavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = Screen.HomeGraph
     ) {
         // 🔹 Authentication
         composable<Screen.Auth> {
@@ -43,22 +51,25 @@ fun SetupNavGraph(
                 },
                 navigateToProfile = {
                     navController.navigate(Screen.Profile)
-                    navController.navigateUp()
-
                 },
                 navigateToAdmin = {
                     navController.navigate(Screen.Admin)
                 },
                 navigateToDetails = { productId ->
                     navController.navigate(Screen.Details(id = productId))
-                    navController.navigateUp()
-
                 },
-                navigateBack = {
-                    navController.navigateUp()
+                navigateToCategorySearch = { categoryName ->
+                    navController.navigate(Screen.CategorySearch(categoryName))
+                },
+                navigateToCart = {
+                    navController.navigate(Screen.Cart)
+                },
+                navigateToCheckout = { totalAmount ->
+                    navController.navigate(Screen.Checkout(totalAmount))
                 }
             )
         }
+
 
         // 🔹 Profile
         composable<Screen.Profile> {
@@ -82,20 +93,78 @@ fun SetupNavGraph(
             ManageProductScreen(
                 navigateBack = { navController.navigateUp() },
                 navigateToEdit = { id ->
-                    // must provide an id here
                     navController.navigate(Screen.ManageProduct(id = id))
                 }
             )
         }
 
-        // 🔹 Details (from anywhere, including nested HomeGraph)
-        composable<Screen.Details> {
-            DetailsScreen(
-                navigateBack = { navController.navigateUp() },
-                navigateToCart = {
-                    navController.navigate(Screen.Cart)
+        composable<Screen.Checkout> { backStackEntry ->
+            val checkoutArgs = backStackEntry.toRoute<Screen.Checkout>()
+            val totalAmount = checkoutArgs.totalAmount.toDoubleOrNull() ?: 0.0
+
+            CheckoutScreen(
+                totalAmount = totalAmount,
+                navigateBack = {
+                    navController.navigateUp()
                 },
+                navigateToPaymentCompleted = { success, message ->
+                    navController.navigate(Screen.HomeGraph) {
+                        popUpTo<Screen.Checkout> { inclusive = true }
+                    }
+                }
             )
         }
+
+        composable<Screen.Details> {
+            DetailsScreen(
+                navigateBack = {
+                    navController.navigateUp()
+                },
+                navigateToCart = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable<Screen.CategorySearch> {
+            val category = it.toRoute<Screen.CategorySearch>().category?.let { it1 ->
+                ProductCategory.valueOf(
+                    it1
+                )
+            }
+            if (category != null) {
+                CategorySearchScreen(
+                    category = category,
+                    navigateToDetails = { id ->
+                        navController.navigate(Screen.Details(id.toString()))
+                    },
+                    navigateBack = {
+                        navController.navigateUp()
+                    }
+                )
+            }
+        }
+       // composable<Screen.Checkout> {
+        //            val totalAmount = it.toRoute<Screen.Checkout>().totalAmount
+        //            CheckoutScreen(
+        //                totalAmount = totalAmount.toDoubleOrNull() ?: 0.0,
+        //                navigateBack = {
+        //                    navController.navigateUp()
+        //                },
+        //                navigateToPaymentCompleted = { success, message ->
+        //                    if (success == true) {
+        //                        navController.navigate(Screen.HomeGraph) {
+        //                            popUpTo<Screen.Checkout> { inclusive = true }
+        //                        }
+        //                    } else {
+        //                        navController.navigate(Screen.HomeGraph) {
+        //                            popUpTo<Screen.Checkout> { inclusive = true }
+        //                        }
+        //                    }
+        //                }
+        //
+        //            )
+        //
+        //        }
     }
 }
+

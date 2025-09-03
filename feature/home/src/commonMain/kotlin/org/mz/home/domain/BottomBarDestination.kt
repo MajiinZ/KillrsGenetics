@@ -9,20 +9,21 @@ enum class BottomBarDestination(
     val title: String,
     val screen: Screen
 ){
+
     ProductsOverview(
         icon = Resources.Icon.Home,
-        title = "KillrsGenetics",
-        screen = Screen.HomeGraph
-    ),
-    Categories(
-        icon = Resources.Icon.Categories,
-        title = "Categories",
-        screen = Screen.Categories
+        title = "Home",
+        screen = Screen.ProductsOverview
     ),
     Cart(
         icon = Resources.Icon.ShoppingCart,
         title = "Cart",
         screen = Screen.Cart
+    ),
+    Categories(
+        icon = Resources.Icon.Categories,
+        title = "Category Search",
+        screen = Screen.Categories
     ),
     Profile(
         icon = Resources.Icon.Profile,

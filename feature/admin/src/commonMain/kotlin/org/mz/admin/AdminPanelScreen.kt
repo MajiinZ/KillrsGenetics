@@ -14,7 +14,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarColors
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -23,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -42,7 +42,6 @@ import org.mz.killrs.shared.component.LoadingCard
 import org.mz.killrs.shared.component.ProductCard
 import org.mz.killrs.shared.util.DisplayResult
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdminPanelScreen(
@@ -52,58 +51,54 @@ fun AdminPanelScreen(
     val viewModel = koinViewModel<AdminPanelViewModel>()
     val products = viewModel.filteredProducts.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
-    var searchBarVisible by mutableStateOf(false)
+    var searchBarVisible by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = Surface,
         topBar = {
             AnimatedContent(
-                targetState = searchBarVisible
+                targetState = searchBarVisible,
+                label = "TopBarAnimation"
             ) { visible ->
                 if (visible) {
                     SearchBar(
                         modifier = Modifier
                             .padding(horizontal = 12.dp)
                             .fillMaxWidth(),
-                        inputField = {
-                            SearchBarDefaults.InputField(
-                                modifier = Modifier.fillMaxWidth(),
-                                query = searchQuery,
-                                onQueryChange = viewModel::updateSearchQuery,
-                                expanded = false,
-                                onExpandedChange = {},
-                                onSearch = {},
-                                placeholder = {
-                                    Text(
-                                        text = "Search here",
-                                        fontSize = FontSize.REGULAR,
-                                        color = TextPrimary
-                                    )
-                                },
-                                trailingIcon = {
-                                    IconButton(
-                                        modifier = Modifier.size(14.dp),
-                                        onClick = {
-                                            if (searchQuery.isNotEmpty()) viewModel.updateSearchQuery("")
-                                            else searchBarVisible = false
-                                        }
-                                    ) {
-                                        Icon(
-                                            painter = painterResource(Resources.Icon.Close),
-                                            contentDescription = "Close icon"
-                                        )
-                                    }
-                                }
+                        query = searchQuery,
+                        onQueryChange = viewModel::updateSearchQuery,
+                        onSearch = {},
+                        active = false,
+                        onActiveChange = {},
+                        placeholder = {
+                            Text(
+                                text = "Search here",
+                                fontSize = FontSize.REGULAR,
+                                color = TextPrimary
                             )
                         },
-                        colors = SearchBarColors(
+                        trailingIcon = {
+                            IconButton(
+                                modifier = Modifier.size(20.dp),
+                                onClick = {
+                                    if (searchQuery.isNotEmpty()) {
+                                        viewModel.updateSearchQuery("")
+                                    } else {
+                                        searchBarVisible = false
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(Resources.Icon.Close),
+                                    contentDescription = "Close icon"
+                                )
+                            }
+                        },
+                        colors = SearchBarDefaults.colors(
                             containerColor = SurfaceLighter,
                             dividerColor = BorderIdle
-                        ),
-                        expanded = false,
-                        onExpandedChange = {},
-                        content = {}
-                    )
+                        )
+                    ) {}
                 } else {
                     TopAppBar(
                         title = {
@@ -145,34 +140,33 @@ fun AdminPanelScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navigateToManageProduct(null) },
+                onClick = { navigateToManageProduct(null)},
                 containerColor = ButtonPrimary,
-                contentColor = IconPrimary,
-                content = {
-                    Icon(
-                        painter = painterResource(Resources.Icon.ProfileFilled),
-                        contentDescription = "Add icon"
-                    )
-                }
-            )
+                contentColor = IconPrimary
+            ) {
+                Icon(
+                    painter = painterResource(Resources.Icon.ProfileFilled),
+                    contentDescription = "Add icon"
+                )
+            }
         }
     ) { padding ->
         products.value.DisplayResult(
-            modifier = Modifier
-                .padding(
-                    top = padding.calculateTopPadding(),
-                    bottom = padding.calculateBottomPadding()
-                ),
+            modifier = Modifier.padding(
+                top = padding.calculateTopPadding(),
+                bottom = padding.calculateBottomPadding()
+            ),
             onLoading = { LoadingCard(modifier = Modifier.fillMaxSize()) },
             onSuccess = { lastProducts ->
                 AnimatedContent(
-                    targetState = lastProducts
-                ) { products ->
-                    if (products.isNotEmpty()) {
+                    targetState = lastProducts.size,
+                    label = "ProductsAnimation"
+                ) { size ->
+                    if (size > 0) {
                         LazyColumn(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(all = 12.dp),
+                                .padding(12.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(
@@ -181,8 +175,7 @@ fun AdminPanelScreen(
                             ) { product ->
                                 ProductCard(
                                     product = product,
-                                    onClick = { navigateToManageProduct(product.id) },
-                                    
+                                    onClick = { navigateToManageProduct(product.id) }
                                 )
                             }
                         }
