@@ -13,6 +13,14 @@ Built with Kotlin's robust cross-platform capabilities, KillrsGenetics targets:
 ✅ Server (Ktor backend with Firebase integration)
 
 
+## 📽️ Demo
+
+Check out the app in action on YouTube Shorts:  
+
+[![Watch the demo](https://img.youtube.com/vi/cbXkYSfZJDo/0.jpg)](https://youtube.com/shorts/cbXkYSfZJDo)
+
+
+
 
 ---
 
