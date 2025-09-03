@@ -9,11 +9,10 @@ KillrsGenetics is a secure, modern e-commerce platform built using Kotlin Multip
 
 Built with Kotlin's robust cross-platform capabilities, KillrsGenetics targets:
 
-✅ Android (Jetpack Compose)  
+✅ Android (Jetpack Compose + Material 3 Design Practices)  
 ✅ Desktop (Compose Multiplatform)  
 ✅ Web (WASM, in progress)  
 ✅ Server (Ktor backend with Firebase integration)  
-
 
 ## 📽️ Demo
 
@@ -21,20 +20,19 @@ Check out the app in action on YouTube Shorts:
 
 [![Watch the demo](https://img.youtube.com/vi/cbXkYSfZJDo/0.jpg)](https://youtube.com/shorts/cbXkYSfZJDo)
 
-
 ---
 
 📦 Project Structure
 
 **composeApp/**  
 UI and business logic for Android and Desktop.  
-Built with JetBrains Compose Multiplatform.  
-Uses shared view models and design components.
+Built with JetBrains Compose Multiplatform, **leveraging Material 3 design guidelines on Android**.  
+Uses shared view models and design components.  
 
 **shared/**  
 Core logic, models, networking, and utilities.  
 Most development takes place in commonMain/.  
-Platform-specific extensions (e.g., androidMain/, desktopMain/) override shared behavior when necessary.
+Platform-specific extensions (e.g., androidMain/, desktopMain/) override shared behavior when necessary.  
 
 **server/**  
 Ktor-based backend with integration for:  
@@ -42,8 +40,7 @@ Ktor-based backend with integration for:
 - Secure order handling  
 - Email-based order notifications  
 
-> 🔒 Note: This folder contains sensitive backend logic and is not publicly available.
-
+> 🔒 Note: This folder contains sensitive backend logic and is not publicly available.  
 
 ---
 
@@ -64,13 +61,14 @@ Ktor-based backend with integration for:
 - **Modular Architecture**  
   Project structure follows clean architecture principles, separating concerns across modules like feature/, data/, navigation/, and di/.  
 
+- **Modern Android UI**  
+  Android app implements **Jetpack Compose** with **Material 3 design principles**, ensuring a consistent, intuitive, and responsive user interface.  
 
 ---
 
 🚀 Vision
 
-KillrsGenetics is committed to delivering a trusted, discreet, and cross-platform shopping experience tailored for customers in the premium genetics market. The app is built with security-first practices and optimized for reliability on both mobile and desktop environments.
-
+KillrsGenetics is committed to delivering a trusted, discreet, and cross-platform shopping experience tailored for customers in the premium genetics market. The app is built with security-first practices and optimized for reliability on both mobile and desktop environments.  
 
 ---
 
@@ -78,11 +76,11 @@ KillrsGenetics is committed to delivering a trusted, discreet, and cross-platfor
 
 - Kotlin Multiplatform (KMP)  
 - JetBrains Compose Multiplatform  
+- Jetpack Compose + Material 3 (Android UI)  
 - Ktor (Backend APIs)  
 - Firebase (Authentication, Realtime DB, Storage)  
 - Google Sign-In  
 - Modular, multi-layer architecture (inspired by clean architecture practices)  
-
 
 ---
 
@@ -97,14 +95,12 @@ Development is active. Planned upcoming features include:
 - 📊 Admin Analytics Dashboard  
 - 🧾 Printable Invoices & Receipts  
 
-
 ---
 
 🙌 Contributions
 
 This is a private, branded project and not accepting outside contributions at this time.  
-However, you are welcome to explore or fork the project for educational purposes only.
-
+However, you are welcome to explore or fork the project for educational purposes only.  
 
 ---
 
@@ -125,4 +121,4 @@ KillrsGenetics operates strictly within the scope of California cannabis law and
 - 🌎 **Jurisdictional Limits**: Cannabis-related products may only be purchased, possessed, and used in jurisdictions where such activities are legal. Customers are solely responsible for compliance with local laws.  
 - 📚 **Educational/Informational Use**: This repository and its contents are provided for **educational and informational purposes only**. Nothing herein should be construed as legal advice.  
 
-For legal guidance, please consult the **California Department of Cannabis Control (DCC)** or a qualified attorney specializing in cannabis law.
+For legal guidance, please consult the **California Department of Cannabis Control (DCC)** or a qualified attorney specializing in cannabis law.  
