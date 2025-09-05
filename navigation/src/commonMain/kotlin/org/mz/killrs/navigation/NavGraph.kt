@@ -1,10 +1,7 @@
-// SetupNavGraph.kt
 package org.mz.killrs.navigation
 
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -13,6 +10,7 @@ import org.mz.admin.AdminPanelScreen
 import org.mz.home.HomeGraphScreen
 import org.mz.killrs.CheckoutScreen
 import org.mz.killrs.DetailsScreen
+import org.mz.killrs.PaymentCompleted
 import org.mz.killrs.auth.AuthenticationScreen
 import org.mz.killrs.category_search.CategorySearchScreen
 import org.mz.killrs.manage_product.ManageProductScreen
@@ -107,10 +105,13 @@ fun SetupNavGraph(
                 navigateBack = {
                     navController.navigateUp()
                 },
-                navigateToPaymentCompleted = { success, message ->
-                    navController.navigate(Screen.HomeGraph) {
-                        popUpTo<Screen.Checkout> { inclusive = true }
-                    }
+                navigateToPaymentCompleted = { isSuccess, error ->
+                    navController.navigate(
+                        Screen.PaymentCompleted(
+                            isSuccess = isSuccess,
+                            error = error
+                        )
+                    )
                 }
             )
         }
@@ -143,28 +144,24 @@ fun SetupNavGraph(
                 )
             }
         }
-       // composable<Screen.Checkout> {
-        //            val totalAmount = it.toRoute<Screen.Checkout>().totalAmount
-        //            CheckoutScreen(
-        //                totalAmount = totalAmount.toDoubleOrNull() ?: 0.0,
-        //                navigateBack = {
-        //                    navController.navigateUp()
-        //                },
-        //                navigateToPaymentCompleted = { success, message ->
-        //                    if (success == true) {
-        //                        navController.navigate(Screen.HomeGraph) {
-        //                            popUpTo<Screen.Checkout> { inclusive = true }
-        //                        }
-        //                    } else {
-        //                        navController.navigate(Screen.HomeGraph) {
-        //                            popUpTo<Screen.Checkout> { inclusive = true }
-        //                        }
-        //                    }
-        //                }
-        //
-        //            )
-        //
-        //        }
+
+        composable<Screen.PaymentCompleted> {
+            val isSuccess = it.toRoute<Screen.PaymentCompleted>().isSuccess
+            val error = it.toRoute<Screen.PaymentCompleted>().error
+            PaymentCompleted(
+                isSuccess = isSuccess,
+                error = error,
+                navigateBack = {
+                    navController.navigate(Screen.HomeGraph){
+                        launchSingleTop = true
+                        //clear backstack completly
+                        popUpTo(0){
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
     }
 }
 

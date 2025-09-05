@@ -164,6 +164,14 @@ fun HomeGraphScreen(
                                 visible = selectedDestination == BottomBarDestination.Cart,
                             ) {
 
+
+                                if (totalAmount.isSuccess()) {
+
+
+                                } else if (totalAmount.isError()) {
+                                    messageBarState.addError("Error fetching total amount.")
+                                }
+
                                 IconButton(
                                     onClick = {
                                         if (totalAmount.isSuccess()) {
@@ -184,7 +192,6 @@ fun HomeGraphScreen(
                                     )
                                 }
                             }
-
                         },
                         navigationIcon = {
                             IconButton(onClick = {

@@ -56,6 +56,7 @@ kotlin {
             implementation(project(path= ":feature:home:categories:category_search"))
             implementation(project(path= ":feature:home:checkout"))
            // implementation(project(path= ":feature:home:checkout:payment_completed"))
+            implementation(project(path= ":feature:home:payment_completed"))
 
         }
         commonTest.dependencies {
