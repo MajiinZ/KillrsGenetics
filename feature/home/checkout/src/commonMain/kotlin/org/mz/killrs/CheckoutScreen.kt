@@ -1,0 +1,153 @@
+package org.mz.killrs
+
+
+import ContentWithMessageBar
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.viewmodel.koinViewModel
+import org.mz.killrs.shared.Exo2FontRegular
+import org.mz.killrs.shared.FontSize
+import org.mz.killrs.shared.IconPrimary
+import org.mz.killrs.shared.Resources
+import org.mz.killrs.shared.Surface
+import org.mz.killrs.shared.SurfaceBrand
+import org.mz.killrs.shared.SurfaceError
+import org.mz.killrs.shared.TextPrimary
+import org.mz.killrs.shared.TextWhite
+import org.mz.killrs.shared.component.CheckoutForm
+import org.mz.killrs.shared.component.PrimaryButton
+import rememberMessageBarState
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CheckoutScreen(
+    totalAmount: Double,
+    navigateBack: () -> Unit,
+    navigateToPaymentCompleted: (Boolean?, String?) -> Unit,
+
+    ) {
+    val messageBarState = rememberMessageBarState()
+    val viewModel = koinViewModel<CheckoutViewModel>()
+    val screenState = viewModel.screenState
+    val isFormValid = viewModel.isFormValid
+
+    Scaffold(
+        containerColor = Surface,
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(
+                        text = "Checkout",
+                        fontFamily = Exo2FontRegular(),
+                        fontSize = FontSize.LARGE,
+                        color = TextPrimary
+                    )
+                },
+                actions = {
+                    Text(
+                        text = "$${totalAmount}",
+                        fontSize = FontSize.EXTRA_MEDIUM,
+                        fontWeight = FontWeight.Medium,
+                        color = TextPrimary
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                },
+                navigationIcon = {
+                    IconButton(onClick = navigateBack) {
+                        Icon(
+                            painter = painterResource(Resources.Icon.BackArrow),
+                            contentDescription = "Back arrow icon",
+                            tint = IconPrimary
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Surface,
+                    scrolledContainerColor = Surface,
+                    navigationIconContentColor = IconPrimary,
+                    titleContentColor = TextPrimary,
+                    actionIconContentColor = IconPrimary
+                )
+            )
+        }
+    ) { padding ->
+        ContentWithMessageBar(
+            contentBackgroundColor = Surface,
+            modifier = Modifier
+                .padding(
+                    top = padding.calculateTopPadding(),
+                    bottom = padding.calculateBottomPadding()
+                ),
+            messageBarState = messageBarState,
+            errorMaxLines = 2,
+            errorContainerColor = SurfaceError,
+            errorContentColor = TextWhite,
+            successContainerColor = SurfaceBrand,
+            successContentColor = TextPrimary
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = 12.dp,
+                        bottom = 24.dp
+                    )
+                    .padding(horizontal = 24.dp),
+                verticalArrangement = Arrangement.SpaceBetween
+            ) {
+                CheckoutForm(
+                    modifier = Modifier.weight(1f),
+                    firstName = screenState.firstName,
+                    onFirstNameChanged = viewModel::updateFirstName,
+                    lastName = screenState.lastName,
+                    onLastNameChanged = viewModel::updateLastName,
+                    email = screenState.email,
+                    onEmailChanged = { viewModel.screenState.copy(email = it) },
+                    city = screenState.city.orEmpty(),
+                    onCityChanged = viewModel::updateCity,
+                    state = screenState.stateNames.name,
+                    onStateSelect = viewModel::updateState,
+                    phoneNumber = screenState.phoneNumber?.number.orEmpty(),
+                    onPhoneNumberChanged = viewModel::updatePhoneNumber,
+                    address = screenState.address.orEmpty(),
+                    onAddressChanged = viewModel::updateAddress
+                )
+
+                Column {
+                    PrimaryButton(
+                        text = "Pay with PayPal",
+                        icon = Resources.Image.KillrsLogo,
+                        enabled = isFormValid,
+                        onClick = {
+                            viewModel.payOnDelivery(
+                                onSuccess = {
+                                    navigateToPaymentCompleted(true, null)
+                                },
+                                onError = { message ->
+                                    navigateToPaymentCompleted(true, null)
+                                }
+
+                            )
+
+                        })
+                }
+            }
+        }
+    }
+}
