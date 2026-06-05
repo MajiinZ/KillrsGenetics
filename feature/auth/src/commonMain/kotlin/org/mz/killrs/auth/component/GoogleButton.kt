@@ -1,6 +1,5 @@
 package org.mz.killrs.auth.component
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.border
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -35,9 +33,7 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.mz.killrs.shared.FontSize
-import org.mz.killrs.shared.IconSecondary
 import org.mz.killrs.shared.Resources
-import org.mz.killrs.shared.TextSecondary
 
 @Composable
 fun GoogleButton(

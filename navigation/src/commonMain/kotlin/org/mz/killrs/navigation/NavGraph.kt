@@ -33,7 +33,8 @@ fun SetupNavGraph(
             AuthenticationScreen(
                 navigateToHome = {
                     navController.navigate(Screen.HomeGraph) {
-                        popUpTo<Screen.Auth> { inclusive = true }
+                        popUpTo<Screen.HomeGraph> { inclusive = true }
+                        launchSingleTop = true
                     }
                 },
             )
@@ -72,7 +73,10 @@ fun SetupNavGraph(
         // 🔹 Profile
         composable<Screen.Profile> {
             ProfileScreen(
-                navigateBack = { navController.navigateUp() }
+                navigateBack = { navController.navigateUp() },
+                navigateToCategories = { categoryName ->
+                    navController.navigate(Screen.CategorySearch(categoryName))
+                }
             )
         }
 

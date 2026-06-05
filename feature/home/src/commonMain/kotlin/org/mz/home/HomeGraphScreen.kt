@@ -260,7 +260,8 @@ fun HomeGraphScreen(
                             }
                             composable<Screen.Profile> {
                                 ProfileScreen(
-                                    navigateBack = { navController.navigateUp() }
+                                    navigateBack = { navController.navigateUp() },
+                                    navigateToCategories = navigateToCategorySearch
                                 )
                             }
                             composable<Screen.Categories> {

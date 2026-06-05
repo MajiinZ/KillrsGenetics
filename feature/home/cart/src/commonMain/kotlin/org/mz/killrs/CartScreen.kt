@@ -1,31 +1,26 @@
 package org.mz.killrs
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
-import org.koin.compose.viewmodel.koinViewModel
-import org.mz.killrs.component.CartItemCard
-import org.mz.killrs.shared.component.LoadingCard
-import org.mz.killrs.shared.util.DisplayResult
-import org.mz.killrs.shared.util.RequestState
-import rememberMessageBarState
-import ContentWithMessageBar
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import org.koin.compose.viewmodel.koinViewModel
+import org.mz.killrs.component.CartItemCard
 import org.mz.killrs.shared.Resources
-import org.mz.killrs.shared.Surface
-import org.mz.killrs.shared.SurfaceBrand
-import org.mz.killrs.shared.SurfaceError
 import org.mz.killrs.shared.component.InfoCard
+import org.mz.killrs.shared.component.LoadingCard
+import org.mz.killrs.shared.util.DisplayResult
+import org.mz.killrs.shared.util.RequestState
+import rememberMessageBarState
 
 
 @Composable

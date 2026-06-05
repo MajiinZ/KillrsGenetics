@@ -40,6 +40,7 @@ import rememberMessageBarState
 @Composable
 fun ProfileScreen(
     navigateBack: () -> Unit,
+    navigateToCategories: (String) -> Unit
 ) {
     val viewModel = koinViewModel<ProfileViewModel>()
     val screenReady = viewModel.screenReady

@@ -68,7 +68,7 @@ fun CustomDrawer(
                         DrawerItem.Profile -> onProfileClick()
                         DrawerItem.Categories -> onCategoriesClick()
                         DrawerItem.CartFilled -> onCartClick()
-                        DrawerItem.Orders -> onOrdersClick()
+                        //DrawerItem.Orders -> onOrdersClick()
                         DrawerItem.Settings -> onSettingsClick()
                         DrawerItem.SignOut -> {
                             onSignOutClick()

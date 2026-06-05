@@ -43,7 +43,7 @@ fun App() {
             visible = appReady
         ) {
             SetupNavGraph(
-                startDestination = startDestination
+                startDestination = Screen.Auth
             )
         }
     }
