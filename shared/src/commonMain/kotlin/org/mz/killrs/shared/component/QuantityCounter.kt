@@ -48,7 +48,10 @@ fun QuantityCounter(
             modifier = Modifier
                 .clip(RoundedCornerShape(size = 6.dp))
                 .background(SurfaceBrand)
-                .clickable { if (value > MIN_QUANTITY) onMinusClick(value - 1) }
+                .clickable(
+                    enabled = value > MIN_QUANTITY,
+                    onClick = { onMinusClick(value - 1) }
+                )
                 .padding(size.padding),
             contentAlignment = Alignment.Center
         ) {
@@ -69,7 +72,7 @@ fun QuantityCounter(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "{$value}",
+                text = "$value",
                 fontSize = FontSize.SMALL,
                 lineHeight = FontSize.SMALL * 1,
                 fontWeight = FontWeight.Medium,
@@ -82,13 +85,16 @@ fun QuantityCounter(
             modifier = Modifier
                 .clip(RoundedCornerShape(size = 6.dp))
                 .background(SurfaceBrand)
-                .clickable { if (value < MAX_QUANTITY) onPlusClick(value + 1) }
+                .clickable(
+                    enabled = value < MAX_QUANTITY,
+                    onClick = { onPlusClick(value + 1) }
+                )
                 .padding(size.padding),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 modifier = Modifier.size(14.dp),
-                painter = painterResource(Resources.Icon.Dollar), // ✅ use plus icon
+                painter = painterResource(Resources.Icon.Plus),
                 contentDescription = "Plus icon",
                 tint = IconPrimary
             )

@@ -67,7 +67,13 @@ actual fun GoogleAuthenticationButton(
                 .requestIdToken(WEB_CLIENT_ID)
                 .requestEmail()
                 .build()
-            launcher.launch(GoogleSignIn.getClient(context, options).signInIntent)
+            val googleSignInClient = GoogleSignIn.getClient(context, options)
+
+            // Clear Google's cached account before opening the sign-in UI so the
+            // customer always chooses which account to use.
+            googleSignInClient.signOut().addOnCompleteListener {
+                launcher.launch(googleSignInClient.signInIntent)
+            }
         }
     )
 }

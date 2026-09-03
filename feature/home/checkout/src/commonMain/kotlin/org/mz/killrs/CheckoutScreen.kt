@@ -131,18 +131,12 @@ fun CheckoutScreen(
 
                 Column {
                     PrimaryButton(
-                        text = "Pay with PayPal",
+                        text = "Pay by bank with AeroPay",
                         icon = Resources.Image.KillrsLogo,
                         enabled = isFormValid,
                         onClick = {
-                            viewModel.payOnDelivery(
-                                onSuccess = {
-                                    navigateToPaymentCompleted(true, null)
-                                },
-                                onError = { message ->
-                                    navigateToPaymentCompleted(true, null)
-                                }
-
+                            viewModel.startAeropayCheckout(
+                                onError = messageBarState::addError
                             )
 
                         })

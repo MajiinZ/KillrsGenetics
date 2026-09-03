@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.withTimeout
 import org.mz.data.domain.AdminRepository
+import org.mz.killrs.shared.Constants.ADMIN_EMAIL
 import org.mz.killrs.shared.domain.Product
 import org.mz.killrs.shared.util.RequestState
 import kotlin.uuid.ExperimentalUuidApi
@@ -20,6 +21,9 @@ import kotlin.uuid.Uuid
 class AdminRepositoryImpl : AdminRepository {
     override fun getCurrentUserId() = Firebase.auth.currentUser?.uid
 
+    private fun isAuthorizedAdmin(): Boolean =
+        Firebase.auth.currentUser?.email.equals(ADMIN_EMAIL, ignoreCase = true)
+
     override suspend fun createNewProduct(
         product: Product,
         onSuccess: () -> Unit,
@@ -27,14 +31,14 @@ class AdminRepositoryImpl : AdminRepository {
     ) {
         try {
             val currentUserId = getCurrentUserId()
-            if (currentUserId != null) {
+            if (currentUserId != null && isAuthorizedAdmin()) {
                 val firestore = Firebase.firestore
                 val productCollection = firestore.collection(collectionPath = "product")
                 productCollection.document(product.id)
                     .set(product.copy(title = product.title.lowercase()))
                 onSuccess()
             } else {
-                onError("User is not available.")
+                onError("Administrator access is required.")
             }
         } catch (e: Exception) {
             onError("Error while creating a new product: ${e.message}")
@@ -44,7 +48,7 @@ class AdminRepositoryImpl : AdminRepository {
 
     @OptIn(ExperimentalUuidApi::class)
     override suspend fun uploadImageToStorage(file: File): String? {
-        return if (getCurrentUserId() != null) {
+        return if (getCurrentUserId() != null && isAuthorizedAdmin()) {
             val storage = Firebase.storage.reference
             val imagePath = storage.child(path = "images/${Uuid.random().toHexString()}")
             try {
@@ -64,6 +68,10 @@ class AdminRepositoryImpl : AdminRepository {
         onError: (String) -> Unit,
     ) {
         try {
+            if (!isAuthorizedAdmin()) {
+                onError("Administrator access is required.")
+                return
+            }
             val storagePath = extractFirebaseStoragePath(downloadUrl)
             if (storagePath != null) {
                 Firebase.storage.reference(storagePath).delete()
@@ -177,7 +185,7 @@ class AdminRepositoryImpl : AdminRepository {
     ) {
         try {
             val userId = getCurrentUserId()
-            if (userId != null) {
+            if (userId != null && isAuthorizedAdmin()) {
                 val database = Firebase.firestore
                 val productCollection = database.collection(collectionPath = "product")
                 val existingProduct = productCollection
@@ -191,7 +199,7 @@ class AdminRepositoryImpl : AdminRepository {
                     onError("Selected Product not found.")
                 }
             } else {
-                onError("User is not available.")
+                onError("Administrator access is required.")
             }
         } catch (e: Exception) {
             onError("Error while updating a thumbnail image: ${e.message}")
@@ -205,7 +213,7 @@ class AdminRepositoryImpl : AdminRepository {
     ) {
         try {
             val userId = getCurrentUserId()
-            if (userId != null) {
+            if (userId != null && isAuthorizedAdmin()) {
                 val database = Firebase.firestore
                 val productCollection = database.collection(collectionPath = "product")
                 val existingProduct = productCollection
@@ -219,7 +227,7 @@ class AdminRepositoryImpl : AdminRepository {
                     onError("Selected Product not found.")
                 }
             } else {
-                onError("User is not available.")
+                onError("Administrator access is required.")
             }
         } catch (e: Exception) {
             onError("Error while updating a thumbnail image: ${e.message}")
@@ -233,7 +241,7 @@ class AdminRepositoryImpl : AdminRepository {
     ) {
         try {
             val userId = getCurrentUserId()
-            if (userId != null) {
+            if (userId != null && isAuthorizedAdmin()) {
                 val database = Firebase.firestore
                 val productCollection = database.collection(collectionPath = "product")
                 val existingProduct = productCollection
@@ -247,7 +255,7 @@ class AdminRepositoryImpl : AdminRepository {
                     onError("Selected Product not found.")
                 }
             } else {
-                onError("User is not available.")
+                onError("Administrator access is required.")
             }
         } catch (e: Exception) {
             onError("Error while updating a thumbnail image: ${e.message}")

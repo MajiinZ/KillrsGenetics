@@ -4,13 +4,16 @@ import killrsgenetics.shared.generated.resources.Res
 import killrsgenetics.shared.generated.resources.add
 import killrsgenetics.shared.generated.resources.add_a_photo
 import killrsgenetics.shared.generated.resources.add_payment
+import killrsgenetics.shared.generated.resources.back_arrow
 import killrsgenetics.shared.generated.resources.close
 import killrsgenetics.shared.generated.resources.delete
 import killrsgenetics.shared.generated.resources.google_logo
 import killrsgenetics.shared.generated.resources.home
 import killrsgenetics.shared.generated.resources.info
+import killrsgenetics.shared.generated.resources.hamburger_menu
 import killrsgenetics.shared.generated.resources.killrs_logo_blk
 import killrsgenetics.shared.generated.resources.menu
+import killrsgenetics.shared.generated.resources.minus
 import killrsgenetics.shared.generated.resources.profile
 import killrsgenetics.shared.generated.resources.search
 import killrsgenetics.shared.generated.resources.settings
@@ -29,7 +32,7 @@ object Resources {
         val Close = Res.drawable.close
         val Profile = Res.drawable.profile
         val Seed = Res.drawable.add_payment
-        val Menu = Res.drawable.menu
+        val Menu = Res.drawable.hamburger_menu
         val Delete = Res.drawable.delete
         val Info = Res.drawable.info
         val ShoppingCartFilled = Res.drawable.shopping_cart
@@ -39,12 +42,13 @@ object Resources {
         val CloseFilled = Res.drawable.close
         val ProfileFilled = Res.drawable.profile
         val AddProduct = Res.drawable.add
-        val MenuFilled = Res.drawable.menu
+        val MenuFilled = Res.drawable.hamburger_menu
         val DeleteFilled = Res.drawable.delete
         val InfoFilled = Res.drawable.info
         val Search = Res.drawable.search
-        val BackArrow = Res.drawable.settings
-        val Minus = Res.drawable.close
+        val BackArrow = Res.drawable.back_arrow
+        val Plus = Res.drawable.add
+        val Minus = Res.drawable.minus
 
 
     }

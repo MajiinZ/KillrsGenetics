@@ -79,8 +79,6 @@ import rememberMessageBarState
 fun ManageProductScreen(
     navigateBack: () -> Unit,
     productId: String? = null,
-    navigateToEdit: (String) -> Unit,
-    id: String? = null
 ) {
     val viewModel = koinViewModel<ManageProductViewModel>()
     val screenState = viewModel.screenState
@@ -120,7 +118,7 @@ fun ManageProductScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = if (id == null) "New Product" else "Edit Product",
+                        text = if (productId == null) "New Product" else "Edit Product",
                         fontFamily = Exo2FontRegular(),
                         fontSize = FontSize.LARGE,
                         color = TextPrimary
@@ -136,6 +134,7 @@ fun ManageProductScreen(
                     }
                 },
                 actions = {
+                    if (productId != null) {
                     Box {
                         IconButton(onClick = { dropDownMenuOpened = true }) {
                             Icon(
@@ -169,8 +168,7 @@ fun ManageProductScreen(
                             )
                         }
                     }
-
-
+                    }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = Surface,
@@ -402,11 +400,11 @@ fun ManageProductScreen(
                     Spacer(modifier = Modifier.height(24.dp))
 
                     PrimaryButton(
-                        text = if (id == null) "Create" else "Update",
+                        text = if (productId == null) "Create" else "Update",
                         icon = Resources.Icon.AddProduct,
                         enabled = viewModel.isFormValid,
                         onClick = {
-                            if (id == null) {
+                            if (productId == null) {
                                 viewModel.createNewProduct(
                                     onSuccess = {
                                         messageBarState.addSuccess("Product created successfully!")
@@ -415,6 +413,14 @@ fun ManageProductScreen(
                                     onError = { message ->
                                         messageBarState.addError(message)
                                     }
+                                )
+                            } else {
+                                viewModel.updateProduct(
+                                    onSuccess = {
+                                        messageBarState.addSuccess("Product updated successfully!")
+                                        navigateBack()
+                                    },
+                                    onError = messageBarState::addError
                                 )
                             }
                         }

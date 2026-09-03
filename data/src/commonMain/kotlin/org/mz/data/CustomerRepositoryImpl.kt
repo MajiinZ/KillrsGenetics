@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.collectLatest
 import org.mz.data.domain.CustomerRepository
 import org.mz.killrs.shared.domain.CartItem
 import org.mz.killrs.shared.domain.Customer
+import org.mz.killrs.shared.Constants.ADMIN_EMAIL
 import org.mz.killrs.shared.util.RequestState
 
 class CustomerRepositoryImpl : CustomerRepository {
@@ -35,23 +36,17 @@ class CustomerRepositoryImpl : CustomerRepository {
                     address = null,
                     phoneNumber = null,
                     cart = emptyList(),
-                    isAdmin = false,
+                    isAdmin = user.email.equals(ADMIN_EMAIL, ignoreCase = true),
                     dateOfBirth = "",
                     gender = ""
                 )
 
                 val customerExists = customerCollection.document(user.uid).get().exists
 
-                if (customerExists) {
-                    onSuccess()
-                } else {
+                if (!customerExists) {
                     customerCollection.document(user.uid).set(customer)
-                    customerCollection.document(user.uid)
-                        .collection("privateData")
-                        .document("role")
-                        .set(mapOf("isAdmin" to false))
-                    onSuccess()
                 }
+                onSuccess()
             } else {
                 onError("User is not available.")
             }
@@ -70,13 +65,6 @@ class CustomerRepositoryImpl : CustomerRepository {
                     .snapshots
                     .collectLatest { document ->
                         if (document.exists) {
-                            val privateDataDocument =
-                                database.collection(collectionPath = "customer")
-                                    .document(userId)
-                                    .collection(collectionPath = "privateData")
-                                    .document("role")
-                                    .get()
-
                             val customer = Customer(
                                 id = document.id,
                                 firstName = document.get(field = "firstName"),
@@ -87,7 +75,10 @@ class CustomerRepositoryImpl : CustomerRepository {
                                 address = document.get(field = "address"),
                                 phoneNumber = document.get(field = "phoneNumber"),
                                 cart = document.get(field = "cart"),
-                                isAdmin = privateDataDocument.get(field = "isAdmin"),
+                                isAdmin = Firebase.auth.currentUser?.email.equals(
+                                    ADMIN_EMAIL,
+                                    ignoreCase = true
+                                ),
                                 dateOfBirth = document.get(field = "dateOfBirth"),
                                 gender = document.get(field = "gender"),
                             )

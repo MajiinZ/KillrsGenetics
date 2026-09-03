@@ -20,15 +20,10 @@ fun ProfileForm(
     onFirstNameChanged: (String) -> Unit,
     lastName: String,
     onLastNameChanged: (String) -> Unit,
-    email: String,
     city: String,
     onCityChanged: (String) -> Unit,
     zipCode: String,
     onPostalCodeChanged: (String) -> Unit,
-    address: String,
-    onAddressChanged: (String) -> Unit,
-    phoneNumber: String,
-    onPhoneNumberChanged: (String) -> Unit,
     state: String,
     onStateSelect: (String) -> Unit,
 
@@ -57,12 +52,6 @@ fun ProfileForm(
             error = lastName.length !in 2..50
         )
         CustomTextField(
-            value = email,
-            onValueChange = {},
-            placeholder = "Email",
-            enabled = false
-        )
-        CustomTextField(
             value = city,
             onValueChange = onCityChanged,
             placeholder = "City",
@@ -84,20 +73,6 @@ fun ProfileForm(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
         )
 
-        CustomTextField(
-            value = address,
-            onValueChange = onAddressChanged,
-            placeholder = "Address",
-            error = address.length !in 3..100
-        )
-
-        CustomTextField(
-            value = phoneNumber,
-            onValueChange = onPhoneNumberChanged,
-            placeholder = "Phone Number (optional)",
-            error = phoneNumber.isNotEmpty() && phoneNumber.length !in 5..30,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
-        )
     }
 }
 

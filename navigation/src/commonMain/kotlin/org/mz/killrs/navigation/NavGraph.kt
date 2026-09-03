@@ -87,12 +87,11 @@ fun SetupNavGraph(
         }
 
         // 🔹 Manage product
-        composable<Screen.ManageProduct> {
+        composable<Screen.ManageProduct> { backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.ManageProduct>()
             ManageProductScreen(
                 navigateBack = { navController.navigateUp() },
-                navigateToEdit = { id ->
-                    navController.navigate(Screen.ManageProduct(id = id))
-                }
+                productId = args.id
             )
         }
 

@@ -43,9 +43,7 @@ class ProfileViewModel(
                     lastName.length in 2..50 &&
                     city.length in 3..50 &&
                     state.abbreviation.length == 2 &&
-                    zipCode.length in 5..10 && zipCode.all { it.isDigit() } &&
-                    address.length in 3..100 &&
-                    (phoneNumber == null || phoneNumber.number.isEmpty() || phoneNumber.number.length in 5..30)
+                    zipCode.length in 5..10 && zipCode.all { it.isDigit() }
         }
 
     init {

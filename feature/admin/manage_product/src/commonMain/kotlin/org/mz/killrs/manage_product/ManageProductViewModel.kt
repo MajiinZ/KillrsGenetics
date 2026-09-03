@@ -140,7 +140,7 @@ class ManageProductViewModel(
     }
 
     fun updateProduct(onSuccess: () -> Unit, onError: (String) -> Unit) {
-        if (!isFormValid)
+        if (isFormValid)
             viewModelScope.launch {
                 adminRepository.updateProduct(
                     product = Product(

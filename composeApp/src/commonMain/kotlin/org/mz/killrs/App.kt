@@ -25,13 +25,11 @@ fun App() {
     MaterialTheme {
         val customerRepository = koinInject<CustomerRepository>()
         var appReady by remember { mutableStateOf(false) }
-        val isUserAuthenticated = remember { customerRepository.getCurrentUserId() != null }
-        val startDestination = remember {
-            if (isUserAuthenticated) Screen.HomeGraph
-            else Screen.Auth
-        }
 
         LaunchedEffect(Unit) {
+            // Require an explicit Google sign-in whenever the app is freshly launched.
+            // This prevents Firebase from restoring the previous user's session.
+            customerRepository.signOut()
             GoogleAuthProvider.create(
                 credentials = GoogleAuthCredentials(serverId = WEB_CLIENT_ID)
             )
@@ -43,7 +41,7 @@ fun App() {
             visible = appReady
         ) {
             SetupNavGraph(
-                startDestination = startDestination
+                startDestination = Screen.Auth
             )
         }
     }

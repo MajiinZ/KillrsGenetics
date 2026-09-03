@@ -113,15 +113,10 @@ fun ProfileScreen(
                                 onFirstNameChanged = viewModel::updateFirstName,
                                 lastName = screenState.lastName,
                                 onLastNameChanged = viewModel::updateLastName,
-                                email = screenState.email,
                                 city = screenState.city ?: "",
                                 onCityChanged = viewModel::updateCity,
-                                phoneNumber = screenState.phoneNumber?.number ?: "",
-                                onPhoneNumberChanged = viewModel::updatePhoneNumber,
                                 zipCode = screenState.zipCode,
-                                onPostalCodeChanged = viewModel::updatePostalCode,
-                                address = screenState.address,
-                                onAddressChanged = viewModel::updateAddress
+                                onPostalCodeChanged = viewModel::updatePostalCode
                             )
 
                             Spacer(modifier = Modifier.height(12.dp))
