@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_number": "623171350158",
+    "project_id": "killrsgenetics-461300",
+    "storage_bucket": "killrsgenetics-461300.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:623171350158:android:992e7aad40825de606e3df",
+        "android_client_info": {
+          "package_name": "org.mz.killrs"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "623171350158-k7cfkmgavduu4r9esjc1il30c9mce3f6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.mz.killrs",
+            "certificate_hash": "7bc9795a4b2221395331440d9b3373a51b4c3dd7"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_Yb6r4QIUhRvpd2bjh1TiQr6wG95km8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "623171350158-d8dhbmpaain349ub105ooo4vtqb8cbrr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
