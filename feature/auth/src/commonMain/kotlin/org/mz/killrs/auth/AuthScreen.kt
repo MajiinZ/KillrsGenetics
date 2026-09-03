@@ -23,13 +23,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.mmk.kmpauth.firebase.google.GoogleButtonUiContainerFirebase
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
-import org.mz.killrs.auth.component.GoogleButton
+import org.mz.killrs.auth.component.GoogleAuthenticationButton
 import org.mz.killrs.shared.Alpha
 import org.mz.killrs.shared.Black
 import org.mz.killrs.shared.Exo2FontRegular
@@ -111,42 +110,43 @@ fun AuthenticationScreen(
                         )
                     }
 
-                    GoogleButtonUiContainerFirebase(
-                        linkAccount = false,
+                    GoogleAuthenticationButton(
+                        loading = loadingState,
+                        onClick = { loadingState = true },
                         onResult = { result ->
                             result.onSuccess { user ->
                                 viewModel.createCustomer(
                                     user = user,
                                     onSuccess = {
                                         scope.launch {
+                                            loadingState = false
                                             messageBarState.addSuccess("Authentication successful")
                                             delay(2000)
                                             navigateToHome()
                                         }
                                     },
-                                    onError = { message -> messageBarState.addError(message) },
-
-                                    )
-                                messageBarState.addSuccess("Authentication successful")
-                                loadingState = false
+                                    onError = { message ->
+                                        scope.launch {
+                                            loadingState = false
+                                            messageBarState.addError(message)
+                                        }
+                                    },
+                                )
                             }.onFailure { error ->
-                                if (error.message?.contains("A network error") == true) {
-                                    messageBarState.addError("No internet connection")
-                                } else if (error.message?.contains("Idtoken is null") == true) {
-                                    messageBarState.addError(error.message ?: "Unknown error")
+                                val message = when {
+                                    error.message?.contains("network", ignoreCase = true) == true ->
+                                        "No internet connection"
+
+                                    error.message?.contains("idtoken is null", ignoreCase = true) == true ->
+                                        "Google Sign-In could not create an ID token. Check the Firebase OAuth configuration."
+
+                                    else -> error.message ?: "Google Sign-In failed. Please try again."
                                 }
+                                messageBarState.addError(message)
                                 loadingState = false
                             }
                         }
-                    ) {
-                        GoogleButton(
-                            loading = false,
-                            onClicked = {
-                                loadingState = true
-                                this@GoogleButtonUiContainerFirebase.onClick()
-                            }
-                        )
-                    }
+                    )
                 }
             }
         }

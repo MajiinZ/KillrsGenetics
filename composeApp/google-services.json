@@ -14,7 +14,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "623171350158-k7cfkmgavduu4r9esjc1il30c9mce3f6.apps.googleusercontent.com",
+          "client_id": "623171350158-u013cnlokh2a046kge4gaa06ljsrdb54.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "org.mz.killrs",
@@ -31,7 +31,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "623171350158-d8dhbmpaain349ub105ooo4vtqb8cbrr.apps.googleusercontent.com",
+              "client_id": "623171350158-ua9j5hm633ff73gqlk8tehbil5h9jr8l.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
