@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -87,6 +88,7 @@ fun HomeGraphScreen(
             when {
                 route.contains(BottomBarDestination.Cart.screen.toString()) -> BottomBarDestination.Cart
                 route.contains(BottomBarDestination.Profile.screen.toString()) -> BottomBarDestination.Profile
+                route.contains(BottomBarDestination.Categories.screen.toString()) -> BottomBarDestination.Categories
                 else -> BottomBarDestination.ProductsOverview
             }
         }
@@ -111,6 +113,26 @@ fun HomeGraphScreen(
     val totalAmount by viewModel.totalAmountFlow.collectAsState(RequestState.Loading)
     val messageBarState = rememberMessageBarState()
 
+    fun navigateFromDrawer(destination: Screen) {
+        drawerState.value = CustomDrawerState.Closed
+        navController.navigate(destination) {
+            launchSingleTop = true
+            popUpTo<Screen.ProductsOverview> { saveState = true }
+            restoreState = true
+        }
+    }
+
+    val screenTitle by remember {
+        derivedStateOf {
+            val route = currentRoute.value?.destination?.route.orEmpty()
+            when {
+                route.contains(Screen.Orders.toString()) -> "Orders"
+                route.contains(Screen.Settings.toString()) -> "Settings"
+                else -> selectedDestination.title
+            }
+        }
+    }
+
     LaunchedEffect(Unit) {
         println("TOTAL AMOUNT: $totalAmount")
     }
@@ -123,13 +145,17 @@ fun HomeGraphScreen(
     ) {
         CustomDrawer(
             customer = customer,
-            onProfileClick = { navigateToProfile() },
-            onCategoriesClick = { },
-            onCartClick = { navController.navigate(Screen.Cart) },
-            onOrdersClick = {},
-            onAdminPanelClick = { navigateToAdmin() },
-            onSettingsClick = {},
+            onProfileClick = { navigateFromDrawer(Screen.Profile) },
+            onCategoriesClick = { navigateFromDrawer(Screen.Categories) },
+            onCartClick = { navigateFromDrawer(Screen.Cart) },
+            onOrdersClick = { navigateFromDrawer(Screen.Orders) },
+            onAdminPanelClick = {
+                drawerState.value = CustomDrawerState.Closed
+                navigateToAdmin()
+            },
+            onSettingsClick = { navigateFromDrawer(Screen.Settings) },
             onSignOutClick = {
+                drawerState.value = CustomDrawerState.Closed
                 viewModel.signOut(
                     onSuccess = navigateToAuth,
                     onError = { message -> messageBarState.addError(message) }
@@ -150,9 +176,9 @@ fun HomeGraphScreen(
                 topBar = {
                     CenterAlignedTopAppBar(
                         title = {
-                            AnimatedContent(targetState = selectedDestination) { destination ->
+                            AnimatedContent(targetState = screenTitle) { title ->
                                 Text(
-                                    text = destination.title,
+                                    text = title,
                                     fontFamily = Exo2FontRegular(),
                                     fontSize = FontSize.LARGE,
                                     color = TextPrimary
@@ -247,9 +273,9 @@ fun HomeGraphScreen(
                                 CartScreen(
                                     navigateToDetails = navigateToDetails,
                                     navigateToCheckout = navigateToCheckout,
-                                    navigateToProfile = navigateToProfile,
+                                    navigateToProfile = { navigateFromDrawer(Screen.Profile) },
                                     navigateToCategories = navigateToCategorySearch,
-                                    navigateToCart = navigateToCart,
+                                    navigateToCart = { navigateFromDrawer(Screen.Cart) },
                                     navigateToPayment = {
                                         navigateToCheckout(
                                             totalAmount.getSuccessData().toString()
@@ -270,10 +296,16 @@ fun HomeGraphScreen(
                                     }
                                 )
                             }
+                            composable<Screen.Orders> {
+                                DrawerDestinationScreen(title = "Orders")
+                            }
+                            composable<Screen.Settings> {
+                                SettingsScreen()
+                            }
                             composable<Screen.Details> {
                                 DetailsScreen(
                                     navigateBack = { navController.popBackStack() },
-                                    navigateToCart = { navController.navigate("home/cart") }
+                                    navigateToCart = { navigateFromDrawer(Screen.Cart) }
                                 )
                             }
                             composable<Screen.CategorySearch> {
@@ -282,7 +314,9 @@ fun HomeGraphScreen(
                                 CategorySearchScreen(
                                     category = category,
                                     navigateBack = { navController.navigateUp() },
-                                    navigateToDetails = { navController.navigate(Screen.Details) }
+                                    navigateToDetails = { id ->
+                                        navController.navigate(Screen.Details(id))
+                                    }
                                 )
                             }
                         }
@@ -292,7 +326,7 @@ fun HomeGraphScreen(
                                 onSelect = { destination ->
                                     navController.navigate(destination.screen) {
                                         launchSingleTop = true
-                                        popUpTo<Screen.HomeGraph> {
+                                        popUpTo<Screen.ProductsOverview> {
                                             saveState = true
                                             inclusive = false
                                         }
@@ -307,5 +341,21 @@ fun HomeGraphScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun DrawerDestinationScreen(title: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize()
+    ) {
+        Text(
+            text = title,
+            fontFamily = Exo2FontRegular(),
+            fontSize = FontSize.LARGE,
+            color = TextPrimary
+        )
     }
 }

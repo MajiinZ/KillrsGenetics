@@ -26,7 +26,7 @@ fun SetupNavGraph(
 
     NavHost(
         navController = navController,
-        startDestination = Screen.HomeGraph
+        startDestination = startDestination
     ) {
         // 🔹 Authentication
         composable<Screen.Auth> {

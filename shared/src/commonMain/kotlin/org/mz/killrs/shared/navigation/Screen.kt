@@ -23,6 +23,12 @@ sealed class Screen {
     data object Categories : Screen()
 
     @Serializable
+    data object Orders : Screen()
+
+    @Serializable
+    data object Settings : Screen()
+
+    @Serializable
     data object Admin : Screen()
 
     // 🔹 Routes with arguments

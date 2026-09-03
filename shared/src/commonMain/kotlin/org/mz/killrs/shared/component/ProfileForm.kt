@@ -10,7 +10,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import kotlin.reflect.KFunction1
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
 
 @Composable
 fun ProfileForm(
@@ -23,13 +24,11 @@ fun ProfileForm(
     city: String,
     onCityChanged: (String) -> Unit,
     zipCode: String,
-    onPostalCodeChanged: (Any) -> Unit,
+    onPostalCodeChanged: (String) -> Unit,
+    address: String,
+    onAddressChanged: (String) -> Unit,
     phoneNumber: String,
     onPhoneNumberChanged: (String) -> Unit,
-    password: () -> Unit,
-    onPasswordChanged: (String) -> Unit,
-    confirmPassword: String,
-    onConfirmPasswordChanged: (String) -> Unit,
     state: String,
     onStateSelect: (String) -> Unit,
 
@@ -55,7 +54,7 @@ fun ProfileForm(
             value = lastName,
             onValueChange = onLastNameChanged,
             placeholder = "Last Name",
-            error = firstName.length !in 3..50
+            error = lastName.length !in 2..50
         )
         CustomTextField(
             value = email,
@@ -71,34 +70,34 @@ fun ProfileForm(
         )
 
         CustomTextField(
-            value = phoneNumber,
-            onValueChange = onPhoneNumberChanged,
-            placeholder = "Phone Number",
-            error = phoneNumber.length !in 5..30)
-
-        CustomTextField(
-            value = password.toString(),
-            onValueChange = onPasswordChanged,
-            placeholder = "Password",
-            error = password.toString().length !in 8..50)
-
-        CustomTextField(
-            value = confirmPassword,
-            onValueChange = onConfirmPasswordChanged,
-            placeholder = "Confirm Password",
-            error = confirmPassword.length !in 8..50)
-
-        CustomTextField(
             value = state,
             onValueChange = onStateSelect,
             placeholder = "State",
-            error = state.length !in 3..50)
+            error = state.length !in 2..50
+        )
 
         CustomTextField(
-            value = "",
-            onValueChange = {},
+            value = zipCode,
+            onValueChange = onPostalCodeChanged,
+            placeholder = "ZIP Code",
+            error = zipCode.length !in 5..10 || zipCode.any { !it.isDigit() },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+        )
+
+        CustomTextField(
+            value = address,
+            onValueChange = onAddressChanged,
             placeholder = "Address",
-            error = false)
+            error = address.length !in 3..100
+        )
+
+        CustomTextField(
+            value = phoneNumber,
+            onValueChange = onPhoneNumberChanged,
+            placeholder = "Phone Number (optional)",
+            error = phoneNumber.isNotEmpty() && phoneNumber.length !in 5..30,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+        )
     }
 }
 

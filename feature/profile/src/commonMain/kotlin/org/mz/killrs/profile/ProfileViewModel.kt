@@ -23,8 +23,6 @@ data class ProfileScreenState(
     val zipCode: String = "",      // ✅ keep as String so TextField input works
     val address: String = "",
     val phoneNumber: PhoneNumber? = null,
-    val password: String = "",
-    val confirmPassword: String = "",
     val state: StateOfUs = StateOfUs("", "")
 )
 
@@ -36,15 +34,18 @@ class ProfileViewModel(
     var screenState: ProfileScreenState by mutableStateOf(ProfileScreenState())
         private set
 
+    private var customer: Customer? = null
+
     // ✅ Improved validation
     val isFormValid: Boolean
         get() = with(screenState) {
-            firstName.length in 3..50 &&
-                    lastName.length in 3..50 &&
+            firstName.length in 2..50 &&
+                    lastName.length in 2..50 &&
                     city.length in 3..50 &&
-                    zipCode.length in 3..8 && zipCode.all { it.isDigit() } &&
-                    address.length in 3..50 &&
-                    phoneNumber?.number?.length in 5..30
+                    state.abbreviation.length == 2 &&
+                    zipCode.length in 5..10 && zipCode.all { it.isDigit() } &&
+                    address.length in 3..100 &&
+                    (phoneNumber == null || phoneNumber.number.isEmpty() || phoneNumber.number.length in 5..30)
         }
 
     init {
@@ -52,6 +53,7 @@ class ProfileViewModel(
             customerRepository.readCustomerFlow().collectLatest { data ->
                 if (data.isSuccess()) {
                     val fetchedCustomer = data.getSuccessData()
+                    customer = fetchedCustomer
                     screenState = ProfileScreenState(
                         id = fetchedCustomer.id,
                         firstName = fetchedCustomer.firstName,
@@ -86,7 +88,7 @@ class ProfileViewModel(
     }
 
     fun updatePostalCode(value: String) {
-        screenState = screenState.copy(zipCode = value)
+        screenState = screenState.copy(zipCode = value.filter(Char::isDigit).take(10))
     }
 
     fun updateAddress(value: String) {
@@ -94,20 +96,12 @@ class ProfileViewModel(
     }
 
     fun updatePhoneNumber(value: String) {
-        screenState = screenState.copy(phoneNumber = PhoneNumber(""  ))
-    }
-
-    fun updatePassword(value: String) {
-        screenState = screenState.copy(password = value)
-    }
-
-    fun updateConfirmPassword(value: String) {
-        screenState = screenState.copy(confirmPassword = value)
+        screenState = screenState.copy(phoneNumber = PhoneNumber(value.take(30)))
     }
 
     fun updateState(value: String) {
         val selectedState = statesOfUs.firstOrNull { it.abbreviation == value || it.name == value }
-            ?: StateOfUs("Unknown", "UK")
+            ?: StateOfUs(value, value.uppercase().take(2))
         screenState = screenState.copy(state = selectedState)
     }
 
@@ -117,21 +111,20 @@ class ProfileViewModel(
         onError: (String) -> Unit,
     ) {
         viewModelScope.launch {
+            val original = customer
+            if (original == null) {
+                onError("Profile is still loading.")
+                return@launch
+            }
             customerRepository.updateCustomer(
-                customer = Customer(
-                    id = screenState.id,
-                    firstName = screenState.firstName,
-                    lastName = screenState.lastName,
-                    email = screenState.email,
-                    city = screenState.city,
+                customer = original.copy(
+                    firstName = screenState.firstName.trim(),
+                    lastName = screenState.lastName.trim(),
+                    city = screenState.city.trim(),
                     zip = screenState.zipCode,
-                    address = screenState.address,
+                    address = screenState.address.trim(),
                     phoneNumber = screenState.phoneNumber,
-                    cart = emptyList(),
-                    isAdmin = false,
-                    dateOfBirth = "",
-                    gender = "",
-                    state = screenState.state.abbreviation // ✅ store state properly
+                    state = screenState.state.abbreviation
                 ),
                 onSuccess = onSuccess,
                 onError = onError

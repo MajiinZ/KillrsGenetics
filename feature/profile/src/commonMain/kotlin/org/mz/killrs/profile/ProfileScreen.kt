@@ -28,7 +28,6 @@ import org.mz.killrs.shared.SurfaceBrand
 import org.mz.killrs.shared.SurfaceError
 import org.mz.killrs.shared.TextPrimary
 import org.mz.killrs.shared.TextWhite
-import org.mz.killrs.shared.component.CheckoutForm
 import org.mz.killrs.shared.component.InfoCard
 import org.mz.killrs.shared.component.LoadingCard
 import org.mz.killrs.shared.component.PrimaryButton
@@ -62,7 +61,7 @@ fun ProfileScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            painter = painterResource(Resources.Icon.Close),
+                            painter = painterResource(Resources.Icon.BackArrow),
                             contentDescription = "Back Arrow icon",
                             tint = IconPrimary
                         )
@@ -118,13 +117,11 @@ fun ProfileScreen(
                                 city = screenState.city ?: "",
                                 onCityChanged = viewModel::updateCity,
                                 phoneNumber = screenState.phoneNumber?.number ?: "",
-                                onPhoneNumberChanged = {viewModel::updatePhoneNumber},
-                                zipCode = screenState.zipCode?.toString() ?: "",
-                                onPostalCodeChanged = {viewModel::updatePostalCode},
-                                password = {screenState.password},
-                                onPasswordChanged = viewModel::updatePassword,
-                                confirmPassword = screenState.confirmPassword,
-                                onConfirmPasswordChanged = viewModel::updateConfirmPassword
+                                onPhoneNumberChanged = viewModel::updatePhoneNumber,
+                                zipCode = screenState.zipCode,
+                                onPostalCodeChanged = viewModel::updatePostalCode,
+                                address = screenState.address,
+                                onAddressChanged = viewModel::updateAddress
                             )
 
                             Spacer(modifier = Modifier.height(12.dp))

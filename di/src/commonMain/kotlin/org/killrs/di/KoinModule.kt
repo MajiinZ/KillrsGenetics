@@ -22,6 +22,7 @@ import org.mz.killrs.manage_product.ManageProductViewModel
 import org.mz.killrs.profile.ProfileViewModel
 import org.mz.products_overview.ProductsOverviewViewmodel
 import org.mz.killrs.categories.CategoriesViewModel
+import org.mz.killrs.category_search.CategorySearchViewmodel
 import org.mz.killrs.CheckoutViewModel
 
 
@@ -40,6 +41,7 @@ val sharedModule = module {
     viewModelOf(::DetailsViewModel)
     viewModelOf(::CartViewModel)
     viewModelOf(::CategoriesViewModel)
+    viewModelOf(::CategorySearchViewmodel)
     viewModelOf(::CheckoutViewModel)
 }
 
